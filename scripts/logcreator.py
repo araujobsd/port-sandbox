@@ -59,8 +59,6 @@ def RefactoryCheckDeps(LogFile):
                 ListUniq.append(ToAppendUniq)
 
     Log.close()
-    print List
-    print ListUniq
 
     LogUniq = open(LogFile, 'w')
     for line in ListUniq:

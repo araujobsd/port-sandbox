@@ -32,12 +32,12 @@
 
 import sys
 import commands
-import shelve
 import MySQLdb
 import qatcheckporterror
 import qatchecksum
 import sql
 import logcreator
+import pcvs
 
 
 PORT_PATH = '/usr/ports/'
@@ -343,6 +343,7 @@ if __name__ == '__main__':
 
         if ControlError == 0:
             File = open(PortReference, 'r')
+            pcvs.CvsCheckOut(PortReference)
 
             try:
                 database = MySQLdb.connect('localhost', 'root', '')
