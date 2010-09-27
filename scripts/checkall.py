@@ -389,6 +389,8 @@ if __name__ == '__main__':
             database.commit()
             logcreator.LogCreator('CheckSum', CheckSumReason, PortReferenceDir, \
                                   PortReference, last[0])
+            Committer = sql.GetCommitter(last[0])
+            print "===> Commit done by: %s" % (Committer)
 
             # Test MainPortExtract
             Table = "MainPort"

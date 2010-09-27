@@ -12,6 +12,29 @@ database = MySQLdb.connect('localhost', 'root', '')
 database.select_db('portsandbox')
 cursor = database.cursor()
 
+def GetCommitter(Last):
+
+    cmd = 'SELECT PortName FROM MainPort WHERE id=%s' % (Last)
+    cursor.execute(cmd)
+    PortName = cursor.fetchone()
+    Committer_Line = None
+    File = PortName[0] + '/' + 'Makefile'
+    Makefile = open(File, 'r')
+
+    for line in Makefile:
+        if '$FreeBSD' in line:
+            Committer_Line = line
+
+    Committer_Line = Committer_Line.split(' ')
+    cmd = 'UPDATE MainPort SET Committer="%s" WHERE id="%s"' \
+           % (Committer_Line[6], Last)
+    cursor.execute(cmd)
+    database.commit()
+    Makefile.close()
+
+    return Committer_Line[6]
+
+
 def LogDepends(Last, PortName, Table):
 
     cmd = 'SELECT PortName from %s WHERE id=%s and PortName="%s"' \
