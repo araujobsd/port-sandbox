@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 
+import commands
 import MySQLdb
 import qatchecksum
 import logcreator
@@ -11,7 +12,27 @@ database = MySQLdb.connect('localhost', 'root', '')
 database.select_db('portsandbox')
 cursor = database.cursor()
 
+def LogDepends(Last, PortName, Table):
+
+    cmd = 'SELECT PortName from %s WHERE id=%s and PortName="%s"' \
+           % (Table, Last, PortName)
+    cursor.execute(cmd)
+    PortName= cursor.fetchone()
+    Name = commands.getstatusoutput('cd %s; make -V PORTNAME' % (PortName[0]))
+    Version = commands.getstatusoutput('cd %s; make -V PORTVERSION' \
+              % (PortName[0]))
+    Log = str(Name[1]) + '-' + str(Version[1]) + '.log'
+    cmd = 'SELECT PortLog from MainPort WHERE id=%s' % (Last)
+    cursor.execute(cmd)
+    LogDir = cursor.fetchone()
+    Result = LogDir[0].split('/')
+    Dir = Result[0] + '/' + Result[1] + '/'
+
+    return Dir, Log
+
+
 def Checking(Last, Table):
+
     cmd = 'SELECT PortName from %s where id=%s' % (Table, Last)
     cursor.execute(cmd)
     PortName = cursor.fetchall()
@@ -38,6 +59,8 @@ def PortSum(IdMainPort, Table, Port):
             % (Table, CheckSumControl, IdMainPort, Port)
     cursor.execute(cmd)
     database.commit()
+    Dir, Log = LogDepends(IdMainPort, Port, Table)
+    logcreator.LogCreator('CheckSum', CheckSumReason, Dir, Log, None)
 
     if CheckSumControl == 0:
         return 0
@@ -72,6 +95,9 @@ def PortExtract(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         if PortReference != None:
             logcreator.LogCreator('Extract', ExtractReason, PortReferenceDir,\
                                   PortReference, IdMainPort)
+        else:
+            Dir, Log = LogDepends(IdMainPort, PortName, Table)
+            logcreator.LogCreator('Extract', ExtractReason, Dir, Log, None)
         return 0
     else:
         return 1
@@ -102,6 +128,9 @@ def PortPatch(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         if PortReference != None:
             logcreator.LogCreator('Patch', PatchReason, PortReferenceDir,\
                                    PortReference, IdMainPort)
+        else:
+            Dir, Log = LogDepends(IdMainPort, PortName, Table)
+            logcreator.LogCreator('Patch', PatchReason, Dir, Log, None)
         return 0
     else:
         return 1
@@ -132,6 +161,9 @@ def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         if PortReference != None:
             logcreator.LogCreator('Build', BuildReason, PortReferenceDir,\
                                    PortReference, IdMainPort)
+        else:
+            Dir, Log = LogDepends(IdMainPort, PortName, Table)
+            logcreator.LogCreator('Build', BuildReason, Dir, Log, None)
         return 0
     else:
         return 1

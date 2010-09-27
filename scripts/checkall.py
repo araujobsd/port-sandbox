@@ -338,13 +338,11 @@ if __name__ == '__main__':
                 Output.write("OK;Build Depends;" + port + "\n")
 
         Output.close()
+        logcreator.RefactoryCheckDeps(PortReference)
         ControlError = qatcheckporterror.CheckPortError(PortReference)
-
-        listPorts = []
 
         if ControlError == 0:
             File = open(PortReference, 'r')
-            database = shelve.open('qat', writeback=True)
 
             try:
                 database = MySQLdb.connect('localhost', 'root', '')
