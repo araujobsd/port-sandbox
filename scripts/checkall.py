@@ -41,6 +41,7 @@ import pcvs
 
 
 PORT_PATH = '/usr/ports/'
+QueueResult = None
 
 class PortDepends:
 
@@ -452,7 +453,6 @@ def Init(PortQueue):
                 diff = qatchecksum.MtreeCheck('Diff')
                 if diff[0] == 0:
                     print '===> PLIST RESULT: OK'
-                    diff[0] = 'PLIST is OK.'
                 elif diff[0] == 512:
                     print '===> PLIST RESULT: NOK'
                 logcreator.LogCreator('PLIST: /usr/local/', diff[1], None, None, last[0])
@@ -468,13 +468,18 @@ def Init(PortQueue):
                 cursor.execute(cmd)
                 PortLogFile = cursor.fetchone()
                 print "===> Log at: %s" % (PortLogFile)
+                QueueResult = 0
             else:
                 print "Something is BROKEN....."
+                QueueResult = 1
 
             database.close()
+            """ The job was done.. """
+            return QueueResult
 
         elif ControlError == 1:
             print "PORT NOK"
+            QueueResult = 1
 
             try:
                 database = MySQLdb.connect('localhost', 'root', '')
@@ -510,4 +515,5 @@ def Init(PortQueue):
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
+            return QueueResult
 

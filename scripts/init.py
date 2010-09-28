@@ -25,7 +25,9 @@ if __name__ == '__main__':
         database.commit()
     elif sys_len == 2:
         print 'Using ./app category/portname'
-        checkall.Init(sys.argv[1])
+        a = checkall.Init(sys.argv[1])
+        print "===> Result: ",
+        print a
     elif sys_len < 2:
         print 'Using ./app category/portname'
         print 'Using ./app add category/portname'
