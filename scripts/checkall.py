@@ -196,15 +196,17 @@ class CheckPorts(PortDepends):
 
         """ Port """
 
+        portDepends = PortDepends()
+        checkPorts = CheckPorts()
 
         PortNoPackage, PortNoCdrom, PortRestricted \
-                = PortDepends.CheckRestrictions(port)
+                = portDepends.CheckRestrictions(port)
 
         PortForbidden, PortBroken, PortDeprecated, PortIgnore \
-                = PortDepends.CheckProblems(port)
+                = portDepends.CheckProblems(port)
 
         PortFetch, PortExtract \
-                = PortDepends.CheckExtraDepends(port)
+                = portDepends.CheckExtraDepends(port)
 
         Errors = {"NoPackage":"", "NoCdrom":"", "Restricted":"", "Forbidden":"", \
                   "Broken":"", "Deprecated":"", "Ignore":"", "Fetch":"", "Extract":""}
@@ -263,31 +265,31 @@ class CheckPorts(PortDepends):
             Errors["Extract"] = PortExtract[0]
             PortExtract =1
 
-        CheckPorts.AllErrors(Errors)
+        checkPorts.AllErrors(Errors)
         """ Without PortFetch and PortExtract """
         return PortNoPackage, PortNoCdrom, PortRestricted, \
                PortForbidden, PortBroken, PortDeprecated, \
                PortIgnore
 
 
-if __name__ == '__main__':
+def Init(PortQueue):
 
-    sys_len = len(sys.argv)
     MainPort = None
 
-    if sys_len < 2:
-        print 'Using: ./dep.py category/portname'
+    if not PortQueue:
+        print 'Terrible error'
+        exit
     else:
         """ Check first the PORT itself """
-        port = PORT_PATH + sys.argv[1]
+        port = PORT_PATH + PortQueue
         MainPort = port
-        PortDepends = PortDepends()
-        CheckPorts = CheckPorts()
-        RunDepends, LibDepends, BuildDepends = PortDepends.Depends(port)
-        Rundepends = PortDepends.ParserDependsList(str(RunDepends))
-        Libdepends = PortDepends.ParserDependsList(str(LibDepends))
-        Builddepends = PortDepends.ParserDependsList(str(BuildDepends))
-        a = CheckPorts.AllPorts(port)
+        portDepends = PortDepends()
+        checkPorts = CheckPorts()
+        RunDepends, LibDepends, BuildDepends = portDepends.Depends(port)
+        Rundepends = portDepends.ParserDependsList(str(RunDepends))
+        Libdepends = portDepends.ParserDependsList(str(LibDepends))
+        Builddepends = portDepends.ParserDependsList(str(BuildDepends))
+        a = checkPorts.AllPorts(port)
         PortName = commands.getstatusoutput('cd %s; make -V PORTNAME' \
                                             % (port))
         PortVersion = commands.getstatusoutput('cd %s; make -V PORTVERSION' \
@@ -304,7 +306,7 @@ if __name__ == '__main__':
             Output.write("OK;Port Name;" + port + ";" + str(a) + "\n")
 
         for port in Rundepends:
-            a = CheckPorts.AllPorts(port)
+            a = checkPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> RUN_DEPENDS: \t%s" % (port)
                 Output.write("Error;Run Depends;" + port + ";" + str(a) + "\n")
@@ -313,7 +315,7 @@ if __name__ == '__main__':
                 Output.write("OK;Run Depends;" + port + ";" + str(a) + "\n")
 
         for port in Libdepends:
-            a = CheckPorts.AllPorts(port)
+            a = checkPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> LIB_DEPENDS: \t%s" % (port)
                 Output.write("Error;Lib Depends;" + port + ";" + str(a) + "\n")
@@ -322,7 +324,7 @@ if __name__ == '__main__':
                 Output.write("OK;Lib Depends;" + port + ";" + str(a) + "\n")
 
         for port in Builddepends:
-            a = CheckPorts.AllPorts(port)
+            a = checkPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> BUILD_DEPENDS: \t%s" % (port)
                 Output.write("Error;Build Depends;" + port + ";" + str(a) + "\n")
