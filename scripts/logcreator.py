@@ -47,7 +47,8 @@ def RefactoryCheckDeps(LogFile):
         if len(List) == 0:
             ToAppend = line[2]
             List.append(ToAppend)
-            ToAppendUniq = line[0] + ';' + line[1] + ';' + line[2]
+            ToAppendUniq = line[0] + ';' + line[1] + ';' + line[2] + \
+                           ';' + line[3]
             ListUniq.append(ToAppendUniq)
         else:
             if line[2] in List:
@@ -55,7 +56,8 @@ def RefactoryCheckDeps(LogFile):
             else:
                 ToAppend = line[2]
                 List.append(ToAppend)
-                ToAppendUniq = line[0] + ';' + line[1] + ';' + line[2]
+                ToAppendUniq = line[0] + ';' + line[1] + ';' + line[2] + \
+                               ';' + line[3]
                 ListUniq.append(ToAppendUniq)
 
     Log.close()

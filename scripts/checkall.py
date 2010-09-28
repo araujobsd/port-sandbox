@@ -176,25 +176,18 @@ class CheckPorts(PortDepends):
             if not NoPackage:
                 pass
             else:
-                print NoPackage
                 pass
             if NoCdrom:
-                print NoCdrom
                 pass
             if Restricted:
-                print Restricted
                 pass
             if Forbidden:
-                print Forbidden
                 pass
             if Broken:
-                print Broken
                 pass
             if Deprecated:
-                print Deprecated
                 pass
             if Ignore:
-                print Ignore
                 pass
 
 
@@ -305,37 +298,37 @@ if __name__ == '__main__':
 
         if 1 in a:
             print "[Error] ==> Port Name: \t%s" % (port)
-            Output.write("Error;Port Name;" + port + "\n")
+            Output.write("Error;Port Name;" + port + ";" + str(a) + "\n")
         else:
             print "===> Port Name: \t%s" % (port)
-            Output.write("OK;Port Name;" + port + "\n")
+            Output.write("OK;Port Name;" + port + ";" + str(a) + "\n")
 
         for port in Rundepends:
             a = CheckPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> RUN_DEPENDS: \t%s" % (port)
-                Output.write("Error;Run Depends;" + port + "\n")
+                Output.write("Error;Run Depends;" + port + ";" + str(a) + "\n")
             else:
                 print "==> RUN_DEPENDS: \t%s" % (port)
-                Output.write("OK;Run Depends;" + port + "\n")
+                Output.write("OK;Run Depends;" + port + ";" + str(a) + "\n")
 
         for port in Libdepends:
             a = CheckPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> LIB_DEPENDS: \t%s" % (port)
-                Output.write("Error;Lib Depends;" + port + "\n")
+                Output.write("Error;Lib Depends;" + port + ";" + str(a) + "\n")
             else:
                 print "==> LIB_DEPENDS: \t%s" % (port)
-                Output.write("OK;Lib Depends;" + port + "\n")
+                Output.write("OK;Lib Depends;" + port + ";" + str(a) + "\n")
 
         for port in Builddepends:
             a = CheckPorts.AllPorts(port)
             if 1 in a:
                 print "[Error] ==> BUILD_DEPENDS: \t%s" % (port)
-                Output.write("Error;Build Depends;" + port + "\n")
+                Output.write("Error;Build Depends;" + port + ";" + str(a) + "\n")
             else:
                 print "==> BUILD_DEPENDS: \t%s" % (port)
-                Output.write("OK;Build Depends;" + port + "\n")
+                Output.write("OK;Build Depends;" + port + ";" + str(a) + "\n")
 
         Output.close()
         logcreator.RefactoryCheckDeps(PortReference)
@@ -343,7 +336,7 @@ if __name__ == '__main__':
 
         if ControlError == 0:
             File = open(PortReference, 'r')
-            pcvs.CvsCheckOut(PortReference)
+            #pcvs.CvsCheckOut(PortReference)
 
             try:
                 database = MySQLdb.connect('localhost', 'root', '')
@@ -476,6 +469,43 @@ if __name__ == '__main__':
             else:
                 print "Something is BROKEN....."
 
+            database.close()
+
         elif ControlError == 1:
             print "PORT NOK"
+
+            try:
+                database = MySQLdb.connect('localhost', 'root', '')
+                database.select_db('portsandbox')
+                cursor = database.cursor()
+            except:
+                print "Error connecting to the database.....\n"
+
+            File = open(PortReference, 'r')
+            for line in File:
+                line = line.split(';')
+                if line[1] == 'Port Name':
+                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "Main")' \
+                            % (line[2])
+                    cursor.execute(cmd)
+                    qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
+                    database.commit()
+                elif line[1] == 'Run Depends' and line[0] == 'Error':
+                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
+                           % (line[2], line[1])
+                    cursor.execute(cmd)
+                    qatcheckporterror.CheckPCRFBDI(None, line2, line[3])
+                    database.commit()
+                elif line[1] == 'Lib Depends' and line[0] == 'Error':
+                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
+                           % (line[2], line[1])
+                    cursor.execute(cmd)
+                    qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
+                    database.commit()
+                elif line[1] == 'Build Depends' and line[0] == 'Error':
+                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
+                           % (line[2], line[1])
+                    cursor.execute(cmd)
+                    qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
+                    database.commit()
 

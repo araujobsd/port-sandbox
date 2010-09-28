@@ -65,14 +65,17 @@ def Checking(Last, Table):
             ExtractControl = PortExtract(Last, Table, Port[0], None, None)
         else:
             print "Error CheckSum..."
+            ExtractControl = 256
         if ExtractControl == 0:
             PatchControl = PortPatch(Last, Table, Port[0], None, None)
         else:
             print "Error Extract..."
+            PatchControl = 256
         if PatchControl == 0:
             BuildControl = PortBuild(Last, Table, Port[0], None, None)
         else:
             print "Error Patch...."
+            BuildControl = 256
 
 
 def PortSum(IdMainPort, Table, Port):
