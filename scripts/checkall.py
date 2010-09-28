@@ -273,7 +273,7 @@ class CheckPorts(PortDepends):
                PortIgnore
 
 
-def Init(PortQueue):
+def Init(PortQueue, Id):
 
     MainPort = None
 
@@ -352,8 +352,8 @@ def Init(PortQueue):
                 line = line.split(';')
                 if line[1] == 'Port Name':
                     portname = line[2].split('\n')
-                    cursor.execute('INSERT INTO MainPort (PortName) VALUES (%s)', \
-                            (portname[0]))
+                    cursor.execute('INSERT INTO MainPort (Id, PortName) VALUES (%s, %s)', \
+                            (Id, portname[0]))
                     database.commit()
                     cursor.execute('SELECT MAX(id) FROM MainPort')
                     last = cursor.fetchone()
@@ -492,26 +492,26 @@ def Init(PortQueue):
             for line in File:
                 line = line.split(';')
                 if line[1] == 'Port Name':
-                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "Main")' \
-                            % (line[2])
+                    cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "Main")' \
+                            % (Id, line[2])
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
                 elif line[1] == 'Run Depends' and line[0] == 'Error':
-                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
-                           % (line[2], line[1])
+                    cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "%s")' \
+                           % (Id, line[2], line[1])
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line2, line[3])
                     database.commit()
                 elif line[1] == 'Lib Depends' and line[0] == 'Error':
-                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
-                           % (line[2], line[1])
+                    cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "%s")' \
+                           % (Id, line[2], line[1])
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
                 elif line[1] == 'Build Depends' and line[0] == 'Error':
-                    cmd = 'INSERT INTO NoBuild (PortName, Category) VALUES ("%s", "%s")' \
-                           % (line[2], line[1])
+                    cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "%s")' \
+                           % (Id, line[2], line[1])
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
