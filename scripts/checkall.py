@@ -449,9 +449,24 @@ if __name__ == '__main__':
             # Test MainPort
             if LibControler == 0 and BuildControler == 0 and RunControler == 0:
                 sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference)
+                qatchecksum.MtreeCheck('Before')
                 sql.PortInstall(last[0], Table, PortReferenceDir, PortReference)
                 sql.MakePackage(last[0], Table, PortReferenceDir, PortReference)
                 sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference)
+                qatchecksum.MtreeCheck('After')
+                diff = qatchecksum.MtreeCheck('Diff')
+                if diff[0] == 0:
+                    print '===> PLIST RESULT: OK'
+                    diff[0] = 'PLIST is OK.'
+                elif diff[0] == 512:
+                    print '===> PLIST RESULT: NOK'
+                logcreator.LogCreator('PLIST: /usr/local/', diff[1], None, None, last[0])
+                qatchecksum.MtreeCheck('Clean')
+                cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
+                      % (diff[0], last[0])
+                cursor.execute(cmd)
+                database.commit()
+
 
                 # Show on console where is the log
                 cmd = 'SELECT PortLog from MainPort where id=%s' % (last[0])

@@ -131,6 +131,27 @@ def DeinstallPort(path):
 
     return deinstall[0], deinstall[1]
 
+
+def MtreeCheck(Phase):
+
+    mtree = 'mtree -c -i -n -k uname,gname,mode,nochange -p /usr/local/'
+
+    if Phase == 'Before':
+        mtreebefore = commands.getstatusoutput('chroot %s /bin/csh -c "%s >/tmp/before"' \
+                                               % (jailpath, mtree))
+    elif Phase == 'After':
+        mtreeafter = commands.getstatusoutput('chroot %s /bin/csh -c "%s >/tmp/after"' \
+                                              % (jailpath, mtree))
+    elif Phase == 'Diff':
+        mtree = 'mtree -f /tmp/after -f /tmp/before'
+        diff = commands.getstatusoutput('chroot %s /bin/csh -c "%s"' % (jailpath, mtree))
+        return diff
+    elif Phase == 'Clean':
+        rm = commands.getstatusoutput('chroot %s /bin/csh -c "rm -f /tmp/before /tmp/after"' \
+                % (jailpath))
+
+
+
 def PortsClean(path):
 
     portsclean = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make clean"'\
