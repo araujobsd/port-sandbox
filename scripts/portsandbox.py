@@ -34,9 +34,6 @@ class Job(object):
 if __name__ == '__main__':
 
     queue = Queue.PriorityQueue()
-    cmd = 'SELECT COUNT(Id) FROM Queue'
-    cursor.execute(cmd)
-    Count = cursor.fetchone()
     cmd = 'SELECT Id, Port FROM Queue WHERE StatusBuild=0'
     cursor.execute(cmd)
     Result = cursor.fetchall()
