@@ -148,6 +148,21 @@ class Jail:
             print "--------------------------"
 
 
+class JailEngine:
+
+
+    def JailPath(self, Id):
+
+        cmd = 'SELECT BuildDir FROM Jail WHERE Id=%s' % (Id)
+        cursor.execute(cmd)
+        Result = cursor.fetchone()
+
+        if Result:
+            return Result[0]
+        else:
+            print "First of all, create a Jail with the jail command."
+
+
 
 if __name__ == '__main__':
 

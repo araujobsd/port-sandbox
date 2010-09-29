@@ -17,18 +17,18 @@ if __name__ == '__main__':
 
     sys_len = len(sys.argv)
 
-    if sys_len == 3:
-        print 'Using ./app add category/portname'
-        cmd = 'INSERT INTO Queue (Port, StatusBuild) VALUES ("%s", "%s")' \
-               % (sys.argv[2], 0)
+    if sys_len == 4:
+        print 'Using ./app add category/portname JailId'
+        cmd = 'INSERT INTO Queue (Port, StatusBuild, JailId) VALUES ("%s", "%s", "%s")' \
+               % (sys.argv[2], 0, sys.argv[3])
         cursor.execute(cmd)
         database.commit()
-    elif sys_len == 2:
-        print 'Using ./app category/portname'
-        a = checkall.Init(sys.argv[1])
+    elif sys_len == 3:
+        print 'Using ./app category/portname JailId'
+        a = checkall.Init(sys.argv[1], None, sys.argv[2])
         print "===> Result: ",
         print a
-    elif sys_len < 2:
-        print 'Using ./app category/portname'
-        print 'Using ./app add category/portname'
+    elif sys_len < 3:
+        print 'Using ./app category/portname JailId'
+        print 'Using ./app add category/portname JailId'
 

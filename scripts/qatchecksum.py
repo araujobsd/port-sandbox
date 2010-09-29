@@ -31,10 +31,16 @@
 #
 
 import commands
+import sys
+sys.path.append('jail')
+import jail
 
-jailpath = '/usr/Jail/Qat/'
+#jailpath = '/usr/Jail/Qat/'
 
-def PortVersion(path):
+def PortVersion(path, JailId):
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     portname = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s ; make -V PORTNAME"' \
                                 % (jailpath, path))
@@ -45,11 +51,14 @@ def PortVersion(path):
     return port
 
 
-def CheckSum(path):
+def CheckSum(path, JailId):
 
 
-     checksum = commands.getstatusoutput('cd %s; make checksum -DBATCH' \
-                            % (path))
+     Jail = jail.JailEngine()
+     jailpath = Jail.JailPath(JailId)
+
+     checksum = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make checksum -DBATCH"' \
+                            % (jailpath, path))
 
      if checksum[0] == 0:
          print "===> Checksum OK: %s" % (path)
@@ -58,7 +67,10 @@ def CheckSum(path):
 
      return checksum[0], checksum[1], path
 
-def MakeExtract(path):
+def MakeExtract(path, JailId):
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     extract = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make extract -DBATCH"' \
                                       % (jailpath, path))
@@ -70,7 +82,11 @@ def MakeExtract(path):
 
     return extract[0], extract[1]
 
-def MakePatch(path):
+def MakePatch(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     patch = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make patch -DBATCH"' \
                                     % (jailpath, path))
@@ -82,7 +98,11 @@ def MakePatch(path):
 
     return patch[0], patch[1]
 
-def MakeBuild(path):
+def MakeBuild(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     build = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make build -DBATCH"' \
                                     % (jailpath, path))
@@ -94,7 +114,11 @@ def MakeBuild(path):
 
     return build[0], build[1]
 
-def InstallPort(path):
+def InstallPort(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     install = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make install -DBATCH"' \
                                       % (jailpath, path))
@@ -106,7 +130,11 @@ def InstallPort(path):
 
     return install[0], install[1]
 
-def MakePackage(path):
+def MakePackage(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     package = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make package -DBATCH"' \
                                       % (jailpath, path))
@@ -119,7 +147,11 @@ def MakePackage(path):
     return package[0], package[1]
 
 
-def DeinstallPort(path):
+def DeinstallPort(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     deinstall = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make deinstall"' \
                                         % (jailpath, path))
@@ -132,7 +164,11 @@ def DeinstallPort(path):
     return deinstall[0], deinstall[1]
 
 
-def MtreeCheck(Phase):
+def MtreeCheck(Phase, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     mtree = 'mtree -c -i -n -k uname,gname,mode,nochange -p /usr/local/'
 
@@ -152,7 +188,11 @@ def MtreeCheck(Phase):
 
 
 
-def PortsClean(path):
+def PortsClean(path, JailId):
+
+
+    Jail = jail.JailEngine()
+    jailpath = Jail.JailPath(JailId)
 
     portsclean = commands.getstatusoutput('chroot %s /bin/csh -c "cd %s; make clean"'\
             % (jailpath, path))

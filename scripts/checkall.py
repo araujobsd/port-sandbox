@@ -273,7 +273,7 @@ class CheckPorts(PortDepends):
                PortIgnore
 
 
-def Init(PortQueue, Id):
+def Init(PortQueue, Id, JailId):
 
     MainPort = None
 
@@ -378,7 +378,7 @@ def Init(PortQueue, Id):
             cursor.execute('SELECT PortName from MainPort where id=%s', (last[0]))
             PortName = cursor.fetchone()
             CheckSumControl, CheckSumReason, Portname \
-                    = qatchecksum.CheckSum(PortName[0])
+                    = qatchecksum.CheckSum(PortName[0], JailId)
             cursor.execute('UPDATE MainPort SET CheckSumControl=%s \
                                WHERE id=%s', (CheckSumControl, \
                                                          last[0]))
@@ -392,13 +392,13 @@ def Init(PortQueue, Id):
             Table = "MainPort"
             if CheckSumControl == 0:
                 ExtractControl = sql.PortExtract(last[0], Table, None, PortReferenceDir,
-                                                PortReference)
+                                                PortReference, JailId)
             else:
                 ExtractControl = 256
 
             if ExtractControl == 0:
                 PatchControl = sql.PortPatch(last[0], Table, None, PortReferenceDir, \
-                                             PortReference)
+                                             PortReference, JailId)
             else:
                 PatchControl = 256
 
@@ -408,22 +408,22 @@ def Init(PortQueue, Id):
             """
             # Check LibDepends
             Table = "LibDepends"
-            sql.Checking(last[0], Table, 0)
+            sql.Checking(last[0], Table, 0, JailId)
             # Check BuildDepends
             Table = "BuildDepends"
-            sql.Checking(last[0], Table, 0)
+            sql.Checking(last[0], Table, 0, JailId)
             # Check RunDepends
             Table = "RunDepends"
-            sql.Checking(last[0], Table, 0)
+            sql.Checking(last[0], Table, 0, JailId)
             # Build LibDepends
             Table = "LibDepends"
-            sql.Checking(last[0], Table, 1)
+            sql.Checking(last[0], Table, 1, JailId)
             # Build BuildDepends
             Table = "BuildDepends"
-            sql.Checking(last[0], Table, 1)
+            sql.Checking(last[0], Table, 1, JailId)
             # Build RunDepends
             Table = "RunDepends"
-            sql.Checking(last[0], Table, 1)
+            sql.Checking(last[0], Table, 1, JailId)
 
             # Check if every port related with the MainPort is OK
             Table = "MainPort"
@@ -455,19 +455,19 @@ def Init(PortQueue, Id):
 
             # Test MainPort
             if LibControler == 0 and BuildControler == 0 and RunControler == 0:
-                sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference)
-                qatchecksum.MtreeCheck('Before')
-                sql.PortInstall(last[0], Table, PortReferenceDir, PortReference)
-                sql.MakePackage(last[0], Table, PortReferenceDir, PortReference)
-                sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference)
-                qatchecksum.MtreeCheck('After')
-                diff = qatchecksum.MtreeCheck('Diff')
+                sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference, JailId)
+                qatchecksum.MtreeCheck('Before', JailId)
+                sql.PortInstall(last[0], Table, PortReferenceDir, PortReference, JailId)
+                sql.MakePackage(last[0], Table, PortReferenceDir, PortReference, JailId)
+                sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference, JailId)
+                qatchecksum.MtreeCheck('After', JailId)
+                diff = qatchecksum.MtreeCheck('Diff', JailId)
                 if diff[0] == 0:
                     print '===> PLIST RESULT: OK'
                 elif diff[0] == 512:
                     print '===> PLIST RESULT: NOK'
                 logcreator.LogCreator('PLIST: /usr/local/', diff[1], None, None, last[0])
-                qatchecksum.MtreeCheck('Clean')
+                qatchecksum.MtreeCheck('Clean', JailId)
                 cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
                       % (diff[0], last[0])
                 cursor.execute(cmd)

@@ -54,33 +54,33 @@ def LogDepends(Last, PortName, Table):
     return Dir, Log
 
 
-def Checking(Last, Table, StartBuild):
+def Checking(Last, Table, StartBuild, JailId):
 
     cmd = 'SELECT PortName from %s where id=%s' % (Table, Last)
     cursor.execute(cmd)
     PortName = cursor.fetchall()
     for Port in PortName:
         if StartBuild == 0:
-            CheckSumControl = PortSum(Last, Table, Port[0])
+            CheckSumControl = PortSum(Last, Table, Port[0], JailId)
             if CheckSumControl == 0:
-                ExtractControl = PortExtract(Last, Table, Port[0], None, None)
+                ExtractControl = PortExtract(Last, Table, Port[0], None, None, JailId)
             else:
                 print "Error CheckSum..."
                 ExtractControl = 256
             if ExtractControl == 0:
-                PatchControl = PortPatch(Last, Table, Port[0], None, None)
+                PatchControl = PortPatch(Last, Table, Port[0], None, None, JailId)
             else:
                 print "Error Extract..."
                 PatchControl = 256
         # ALERT: Here maybe there is a bug.
         # Should I check the PatchControl(SQL) before? Yes, I think so!
         if StartBuild == 1:
-            BuildControl = PortBuild(Last, Table, Port[0], None, None)
+            BuildControl = PortBuild(Last, Table, Port[0], None, None, JailId)
 
 
-def PortSum(IdMainPort, Table, Port):
+def PortSum(IdMainPort, Table, Port, JailId):
 
-    CheckSumControl, CheckSumReason, PortName = qatchecksum.CheckSum(Port)
+    CheckSumControl, CheckSumReason, PortName = qatchecksum.CheckSum(Port, JailId)
     cmd = 'UPDATE %s SET CheckSumControl=%s WHERE id=%s and PortName="%s"' \
             % (Table, CheckSumControl, IdMainPort, Port)
     cursor.execute(cmd)
@@ -95,7 +95,7 @@ def PortSum(IdMainPort, Table, Port):
 
 
 
-def PortExtract(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
+def PortExtract(IdMainPort, Table, PortName, PortReferenceDir, PortReference, JailId):
 
     if PortName == None:
         cmd = 'SELECT PortName, CheckSumControl from %s where id=%s' \
@@ -113,7 +113,7 @@ def PortExtract(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
 
 
     if CheckSumControl == 0:
-        ExtractControl, ExtractReason = qatchecksum.MakeExtract(PortName)
+        ExtractControl, ExtractReason = qatchecksum.MakeExtract(PortName, JailId)
         cmd = 'UPDATE %s SET ExtractControl=%s WHERE id=%s and PortName="%s"' \
                 % (Table, ExtractControl, IdMainPort, PortName)
         cursor.execute(cmd)
@@ -129,7 +129,7 @@ def PortExtract(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         return 1
 
 
-def PortPatch(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
+def PortPatch(IdMainPort, Table, PortName, PortReferenceDir, PortReference, JailId):
 
     if PortName == None:
         cmd = 'SELECT PortName, ExtractControl from %s WHERE id=%s' \
@@ -146,7 +146,7 @@ def PortPatch(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         ExtractControl = result[0]
 
     if ExtractControl == 0:
-        PatchControl, PatchReason = qatchecksum.MakePatch(PortName)
+        PatchControl, PatchReason = qatchecksum.MakePatch(PortName, JailId)
         cmd = 'UPDATE %s SET PatchControl=%s WHERE id=%s AND PortName="%s"' \
                 % (Table, PatchControl, IdMainPort, PortName)
         cursor.execute(cmd)
@@ -162,7 +162,7 @@ def PortPatch(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         return 1
 
 
-def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
+def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference, JailId):
 
     if PortName == None:
         cmd = 'SELECT PortName, PatchControl from %s WHERE id=%s' \
@@ -179,7 +179,7 @@ def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         PatchControl = result[0]
 
     if PatchControl == 0:
-        BuildControl, BuildReason = qatchecksum.MakeBuild(PortName)
+        BuildControl, BuildReason = qatchecksum.MakeBuild(PortName, JailId)
         cmd = 'UPDATE %s SET BuildControl=%s WHERE id=%s AND PortName="%s"' \
                 % (Table, BuildControl, IdMainPort, PortName)
         cursor.execute(cmd)
@@ -195,7 +195,7 @@ def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference):
         return 1
 
 
-def PortInstall(IdMainPort, Table, PortReferenceDir, PortReference):
+def PortInstall(IdMainPort, Table, PortReferenceDir, PortReference, JailId):
 
     cmd = 'SELECT PortName, BuildControl from %s WHERE id=%s' \
             % (Table, IdMainPort)
@@ -204,7 +204,7 @@ def PortInstall(IdMainPort, Table, PortReferenceDir, PortReference):
     PortName = result[0]
     BuildControl = result[1]
     if BuildControl == 0:
-        InstallControl, InstallReason = qatchecksum.InstallPort(PortName)
+        InstallControl, InstallReason = qatchecksum.InstallPort(PortName, JailId)
         cmd = 'UPDATE %s SET InstallControl=%s WHERE id=%s' \
                 % (Table, InstallControl, IdMainPort)
         cursor.execute(cmd)
@@ -216,7 +216,7 @@ def PortInstall(IdMainPort, Table, PortReferenceDir, PortReference):
     else:
         return 1
 
-def MakePackage(IdMainPort, Table, PortReferenceDir, PortReference):
+def MakePackage(IdMainPort, Table, PortReferenceDir, PortReference, JailId):
 
     cmd = 'SELECT PortName, InstallControl from %s WHERE id=%s' \
             % (Table, IdMainPort)
@@ -225,7 +225,7 @@ def MakePackage(IdMainPort, Table, PortReferenceDir, PortReference):
     PortName = result[0]
     InstallControl = result[1]
     if InstallControl == 0:
-        PackageControl, PackageReason = qatchecksum.MakePackage(PortName)
+        PackageControl, PackageReason = qatchecksum.MakePackage(PortName, JailId)
         cmd = 'UPDATE %s SET PackageControl=%s WHERE id=%s' \
                 % (Table, PackageControl, IdMainPort)
         cursor.execute(cmd)
@@ -238,7 +238,7 @@ def MakePackage(IdMainPort, Table, PortReferenceDir, PortReference):
         return 1
 
 
-def PortDeinstall(IdMainPort, Table, PortReferenceDir, PortReference):
+def PortDeinstall(IdMainPort, Table, PortReferenceDir, PortReference, JailId):
 
     cmd = 'SELECT PortName, InstallControl from %s WHERE id=%s' \
             % (Table, IdMainPort)
@@ -247,7 +247,7 @@ def PortDeinstall(IdMainPort, Table, PortReferenceDir, PortReference):
     PortName = result[0]
     InstallControl = result[1]
     if InstallControl == 0:
-        DeinstallControl, DeinstallReason = qatchecksum.DeinstallPort(PortName)
+        DeinstallControl, DeinstallReason = qatchecksum.DeinstallPort(PortName, JailId)
         cmd = 'UPDATE %s SET DeinstallControl=%s WHERE id=%s' \
                 % (Table, DeinstallControl, IdMainPort)
         cursor.execute(cmd)
