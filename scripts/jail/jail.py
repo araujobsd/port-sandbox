@@ -26,7 +26,6 @@ class Jail:
             self.CreateCvsFile(Name, JailDir, Releng)
         else:
             print "===> There is a Jail at: %s" % (JailDir)
-            self.CreateCvsFile(Name, JailDir, Releng)
 
 
     def CreateCvsFile(self, Name, JailDir, Releng):
@@ -79,11 +78,6 @@ class Jail:
 
     def JailDatabase(self, Name, JailDir, BuildDir, Releng):
 
-        print Name
-        print JailDir
-        print BuildDir
-        print Releng
-
         if Name != None and JailDir != None and BuildDir != None and Releng != None:
             print "OK"
             cmd = "INSERT INTO Jail (JailName, JailDir, BuildDir, Releng) \
@@ -95,14 +89,51 @@ class Jail:
 
 
 
-    def UpdateJail(self):
+    def UpdateJail(self, Id):
 
-        print "oi"
+        if Id != None:
+            cmd = 'SELECT Id, JailDir FROM Jail WHERE Id=%s' % (Id)
+            cursor.execute(cmd)
+            Result = cursor.fetchone()
+            if Result:
+                Id = Result[0]
+                JailDir = Result[1]
+                csup = '/usr/bin/csup'
+                Prefix = JailDir + '/build'
+                ConfFile = JailDir + '/csup.conf'
+                os.system('%s -L2 -g %s' % (csup, ConfFile))
+                os.system('cd %s/src/; make buildworld DESTDIR=%s' % (JailDir, Prefix))
+                os.system('cd %s/src/; make installworld DESTDIR=%s' % (JailDir, Prefix))
+                os.system('cd %s; tar -jcpvf build.bz2 %s' % (JailDir, Prefix))
+            else:
+                print "There isn't a Jail with Id number %s" % (Id)
+        else:
+            print "You should pass the Id number, consulting with the option list"
 
 
-    def RmJail(self):
 
-        print "oi"
+    def RmJail(self, Id):
+
+        if Id != None:
+            cmd = 'SELECT Id from Jail WHERE Id=%s' % (Id)
+            cursor.execute(cmd)
+            Result = cursor.fetchone()
+            if Result:
+                cmd = 'SELECT Id, JailDir from Jail WHERE Id="%s"' % (Result[0])
+                cursor.execute(cmd)
+                Result = cursor.fetchone()
+                Id = Result[0]
+                JailDir = Result[1]
+                cmd = "DELETE from Jail WHERE Id='%s'" % (Id)
+                cursor.execute(cmd)
+                database.commit()
+                os.system('cd %s/build ; find . | xargs chflags noschg' % (JailDir))
+                os.system('rm -rf %s' % (JailDir))
+            else:
+                print "There isn't a Jail with Id number %s" % (Id)
+        else:
+            print "You should pass the Id number, consulting with the option list"
+
 
     def ListJail(self):
 
@@ -117,6 +148,7 @@ class Jail:
             print "--------------------------"
 
 
+
 if __name__ == '__main__':
 
     jail = Jail()
@@ -126,20 +158,20 @@ if __name__ == '__main__':
         if sys.argv[1] == 'create':
             jail.CreateJailEnvironment(sys.argv[2], sys.argv[3])
         else:
-            print "Usage: ./a create NAME RELENG_X"
+            print "Usage: ./jail.py create NAME RELENG_X"
     elif sys_len == 3:
         if sys.argv[1] == 'update':
-            print "Update"
+            jail.UpdateJail(sys.argv[2])
         elif sys.argv[1] == 'remove':
-            print "Remove"
+            jail.RmJail(sys.argv[2])
     elif sys_len == 2:
         if sys.argv[1] == 'list':
             jail.ListJail()
         elif sys.argv[1] == 'help':
-            print "Example: ./a create NAME RELENG_X"
-            print "Example: ./a update NAME"
-            print "Example: ./a remove NAME"
-            print "Example: ./a list"
+            print "Example: ./jail.py create NAME RELENG_X"
+            print "Example: ./jail.py update ID"
+            print "Example: ./jail.py remove ID"
+            print "Example: ./jail.py list"
     else:
-        print "Usage: ./a help"
+        print "Usage: ./jail.py help"
 
