@@ -402,17 +402,28 @@ def Init(PortQueue, Id):
             else:
                 PatchControl = 256
 
+            """ First CheckSum, Extract and Patch.
+                sql.Checking(last[0], Table, 0) <-- Doesn't Build
+                sql.Checking(last[0], Table, 1) <-- Does Build
+            """
             # Check LibDepends
             Table = "LibDepends"
-            sql.Checking(last[0], Table)
-
+            sql.Checking(last[0], Table, 0)
             # Check BuildDepends
             Table = "BuildDepends"
-            sql.Checking(last[0], Table)
-
+            sql.Checking(last[0], Table, 0)
             # Check RunDepends
             Table = "RunDepends"
-            sql.Checking(last[0], Table)
+            sql.Checking(last[0], Table, 0)
+            # Build LibDepends
+            Table = "LibDepends"
+            sql.Checking(last[0], Table, 1)
+            # Build BuildDepends
+            Table = "BuildDepends"
+            sql.Checking(last[0], Table, 1)
+            # Build RunDepends
+            Table = "RunDepends"
+            sql.Checking(last[0], Table, 1)
 
             # Check if every port related with the MainPort is OK
             Table = "MainPort"

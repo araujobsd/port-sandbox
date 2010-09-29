@@ -54,28 +54,28 @@ def LogDepends(Last, PortName, Table):
     return Dir, Log
 
 
-def Checking(Last, Table):
+def Checking(Last, Table, StartBuild):
 
     cmd = 'SELECT PortName from %s where id=%s' % (Table, Last)
     cursor.execute(cmd)
     PortName = cursor.fetchall()
     for Port in PortName:
-        CheckSumControl = PortSum(Last, Table, Port[0])
-        if CheckSumControl == 0:
-            ExtractControl = PortExtract(Last, Table, Port[0], None, None)
-        else:
-            print "Error CheckSum..."
-            ExtractControl = 256
-        if ExtractControl == 0:
-            PatchControl = PortPatch(Last, Table, Port[0], None, None)
-        else:
-            print "Error Extract..."
-            PatchControl = 256
-        if PatchControl == 0:
+        if StartBuild == 0:
+            CheckSumControl = PortSum(Last, Table, Port[0])
+            if CheckSumControl == 0:
+                ExtractControl = PortExtract(Last, Table, Port[0], None, None)
+            else:
+                print "Error CheckSum..."
+                ExtractControl = 256
+            if ExtractControl == 0:
+                PatchControl = PortPatch(Last, Table, Port[0], None, None)
+            else:
+                print "Error Extract..."
+                PatchControl = 256
+        # ALERT: Here maybe there is a bug.
+        # Should I check the PatchControl(SQL) before? Yes, I think so!
+        if StartBuild == 1:
             BuildControl = PortBuild(Last, Table, Port[0], None, None)
-        else:
-            print "Error Patch...."
-            BuildControl = 256
 
 
 def PortSum(IdMainPort, Table, Port):
