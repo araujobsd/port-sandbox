@@ -38,6 +38,10 @@ import qatchecksum
 import sql
 import logcreator
 import pcvs
+import sys
+sys.path.append('jail')
+import jail
+
 
 
 PORT_PATH = '/usr/ports/'
@@ -348,6 +352,10 @@ def Init(PortQueue, Id, JailId):
             except:
                 print "Error connecting to the database....\n"
 
+            # Create the Jail environment (extract)
+            JailClass = jail.JailEngine()
+            JailClass.ExtractJail(JailId)
+
             for line in File:
                 line = line.split(';')
                 if line[1] == 'Port Name':
@@ -485,6 +493,10 @@ def Init(PortQueue, Id, JailId):
                 QueueResult = 1
 
             database.close()
+
+            # Clean the Jail environment (CleanJail)
+            JailClass.CleanJail(JailId)
+
             """ The job was done.. """
             return QueueResult
 

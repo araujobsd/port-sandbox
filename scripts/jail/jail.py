@@ -69,12 +69,6 @@ class Jail:
             os.system('cd %s; tar -jcpvf build.bz2 %s' % (JailDir, Prefix))
             self.JailDatabase(Name, JailDir, Prefix, Releng)
 
-            """
-            os.system('mount_nullfs /usr/ports %s/usr/ports/' % (Prefix))
-            os.system('mount -t devfs devfs %s/dev' %(Prefix))
-            os.system('devfs -m %s/dev rule apply path null unhide' % (Prefix))
-            os.system('mount -t procfs proc %s/proc' %(Prefix))
-            """
 
     def JailDatabase(self, Name, JailDir, BuildDir, Releng):
 
@@ -161,6 +155,39 @@ class JailEngine:
             return Result[0]
         else:
             print "First of all, create a Jail with the jail command."
+
+
+    def ExtractJail(self, Id):
+
+        cmd = 'SELECT JailDir, BuildDir FROM Jail WHERE Id=%s' % (Id)
+        cursor.execute(cmd)
+        Result = cursor.fetchone()
+        JailDir = Result[0]
+        BuildDir = Result[1]
+        os.system('cd %s ; tar -jxpvf build.bz2' % (JailDir))
+        os.system('mount -t devfs devfs %s/dev' % (BuildDir))
+        os.system('devfs -m %s/dev rule apply path null unhide' % (BuildDir))
+        os.system('mkdir %s/usr/ports' % (BuildDir))
+        os.system('mount_nullfs /usr/ports %s/usr/ports' % (BuildDir))
+        os.system('mount_nullfs /var %s/var' % (BuildDir))
+        os.system('mkdir %s/usr/src' % (BuildDir))
+        os.system('mount_nullfs /usr/src %s/usr/src' % (BuildDir))
+
+
+
+    def CleanJail(self, Id):
+
+        cmd = 'SELECT BuildDir FROM Jail WHERE Id=%s' % (Id)
+        cursor.execute(cmd)
+        Result = cursor.fetchone()
+        BuildDir = Result[0]
+        os.system('umount %s/usr/ports' % (BuildDir))
+        os.system('umount %s/var' % (BuildDir))
+        os.system('umount %s/usr/src' % (BuildDir))
+        os.system('umount %s/dev' % (BuildDir))
+        os.system('cd %s ; find . | xargs chflags noschg' % (BuildDir))
+        os.system('rm -rf %s' % (BuildDir))
+        print BuildDir
 
 
 
