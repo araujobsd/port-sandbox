@@ -1,0 +1,39 @@
+<a> Next Port: </a><b>$NextBuild</b>
+<center><table width="90%">
+<thead>
+<tr>
+    <th class="caption"> Id </th>
+    <th class="caption"> Main Port </th>
+    <th class="caption"> Status </th>
+    <th class="caption"> StatusBuild </th>
+    <th class="caption"> Jail Number </th>
+    <th class="depends">L</th>
+    <th class="depends">B</th>
+    <th class="depends">R</th>
+</tr>
+</thead>
+<tbody>
+#for $port in $Queue
+    #if $port[5] == 1
+        <tr>
+            <td><center>$port[0]</center></td>
+            #for $log in $MainPort
+                #if $log[0] == $port[0]
+                    <td><center><a href="$log[1]">$port[1]</a></center></td>
+                #end if
+            #end for
+            <td><center>$port[4]</center></td>
+            <td><center>$port[5]</center></td>
+            #for $JailName in $Jails
+                #if $JailName[0] ==  $port[6]
+                    <td><center>$JailName[1]</center></td>
+                #end if
+            #end for
+            <td><center>OK</center></td>
+            <td><center>OK</center></td>
+            <td><center>OK</center></td>
+    #end if
+</tr>
+#end for
+</tbody>
+</table>
