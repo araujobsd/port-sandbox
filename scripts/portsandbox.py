@@ -6,7 +6,7 @@
 
 import MySQLdb
 import Queue
-from datetime import datetime
+import datetime
 import checkall
 
 database = MySQLdb.connect('localhost', 'root', '')
@@ -25,6 +25,12 @@ class Job(object):
         cmd = 'UPDATE Queue SET StatusBuild=1, Status=%s WHERE Id=%s' % (a, Id)
         cursor.execute(cmd)
         database.commit()
+        date = str(datetime.datetime.now())
+        date = date.split('.')
+        cmd = 'UPDATE Queue SET StartBuild="%s" WHERE Id=%s' % (date[0], Id)
+        cursor.execute(cmd)
+        database.commit()
+
         return
 
     def __cmp__(self, other):

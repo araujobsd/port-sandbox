@@ -6,6 +6,7 @@
 
 import sys
 import os
+import commands
 import MySQLdb
 
 database = MySQLdb.connect('localhost', 'root', '')
@@ -66,6 +67,7 @@ class Jail:
             os.system('%s -L2 -g %s' % (csup, ConfFile))
             os.system('cd %s/src/; make buildworld DESTDIR=%s' % (JailDir, Prefix))
             os.system('cd %s/src/; make installworld DESTDIR=%s' % (JailDir, Prefix))
+            os.system('cd %s/src/; make distribution DESTDIR=%s' % (JailDir, Prefix))
             os.system('cd %s; tar -jcpvf build.bz2 %s' % (JailDir, Prefix))
             self.JailDatabase(Name, JailDir, Prefix, Releng)
 
@@ -98,6 +100,7 @@ class Jail:
                 os.system('%s -L2 -g %s' % (csup, ConfFile))
                 os.system('cd %s/src/; make buildworld DESTDIR=%s' % (JailDir, Prefix))
                 os.system('cd %s/src/; make installworld DESTDIR=%s' % (JailDir, Prefix))
+                os.system('cd %s/src/; make distribution DESTDIR=%s' % (JailDir, Prefix))
                 os.system('cd %s; tar -jcpvf build.bz2 %s' % (JailDir, Prefix))
             else:
                 print "There isn't a Jail with Id number %s" % (Id)

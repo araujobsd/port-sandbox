@@ -44,5 +44,3 @@ def CvsCheckOut(PortList):
         line = line[1].split('\n')
         os.system('%s %s co %s' % (cvs, anonserver, line[0]))
         os.system('cp -R ports /usr/ ; rm -rf ports')
-
-

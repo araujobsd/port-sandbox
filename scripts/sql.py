@@ -18,6 +18,7 @@ def GetCommitter(Last):
     cursor.execute(cmd)
     PortName = cursor.fetchone()
     Committer_Line = None
+
     File = PortName[0] + '/' + 'Makefile'
     Makefile = open(File, 'r')
 

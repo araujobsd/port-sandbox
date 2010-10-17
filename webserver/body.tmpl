@@ -1,4 +1,5 @@
-<a> Next Port: </a><b>$NextBuild</b>
+<h3>Next Build: <a>$NextBuild</a></h3>
+<p></p>
 <center><table width="90%">
 <thead>
 <tr>
@@ -13,6 +14,14 @@
 </tr>
 </thead>
 <tbody>
+
+#attr $LibCount = 0 
+#attr $BuildCount = 0 
+#attr $RunCount = 0
+#attr $LibQuant = 0
+#attr $BuildQuant = 0
+#attr $RunQuant = 0
+
 #for $port in $Queue
     #if $port[5] == 1
         <tr>
@@ -29,10 +38,62 @@
                     <td><center>$JailName[1]</center></td>
                 #end if
             #end for
-            <td><center>OK</center></td>
-            <td><center>OK</center></td>
-            <td><center>OK</center></td>
     #end if
+
+    #if $LibDepends
+        #for $libDepends in $LibDepends
+            #if $libDepends[0][0] == $port[0]
+                #set $LibCount = 1
+                #set $LibQuant = $LibQuant + 1
+            #else
+                #set $LibCount = 0 
+            #end if
+        #end for
+        #if $LibCount == 1
+            <td><center>$LibQuant</center></td>
+        #else
+            <td><center>NA</center></td>
+        #end if
+    #else
+        <td><center>NA</center></td>
+    #end if
+
+    #if $BuildDepends
+        #for $buildDepends in $BuildDepends
+            #if $buildDepends[0] == $port[0]
+                #set $BuildCount = 1
+                #set $BuildQuant = $BuildQuant + 1
+            #else
+                #set $BuildCount = 0
+            #end if
+        #end for
+        #if $BuildCount == 1
+            <td><center>$BuildQuant</center></td>
+        #else
+            <td><center>NA</center></td>
+        #end if
+    #else
+        <td><center>NA</center></td>
+    #end if   
+
+    #if $RunDepends
+        #for $runDepends in $RunDepends
+            #if $runDepends[0] == $port[0]
+                #set $RunCount = 1
+                #set $RunQuant = $RunQuant + 1
+            #else
+                #set $RunCount = 0
+            #end if
+        #end for
+        #if $RunCount == 1
+            <td><center>$RunQuant</center></td>
+        #else
+            <td><center>NA</center></td>
+        #end if
+    #else
+        <td><center>NA</center></td>
+    #end if
+
 </tr>
 #end for
 </tbody>
