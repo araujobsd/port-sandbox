@@ -3,6 +3,7 @@ import MySQLdb
 import os.path
 from Cheetah.Template import Template
 import psbdatabase
+import porterror
 
 database = MySQLdb.connect('localhost','root', '')
 database.select_db('portsandbox')
@@ -13,8 +14,17 @@ class PageError(object):
 
 
     @cherrypy.expose
-    def index(self):
-        return "Page Error...."
+    def index(self, Id):
+        PortErrors = porterror.HandleErrors()
+        Result = PortErrors.MainPortErrors(Id)
+        start = Start()
+        header = start.header()
+        footer = start.footer()
+        yield header
+
+        yield Result
+
+        yield footer
 
 
 class Start(object):
@@ -36,7 +46,7 @@ class Start(object):
 
         yield '''
             <center><table width='90%' class='caption'>
-            <td>Next in the Pool:
+            <td>Next port in queue:
         '''
         yield '''<a> <b>%s</b></a>''' % (NextBuild)
         yield '''
@@ -62,6 +72,7 @@ class Start(object):
                 <th class="caption"> R </th>
                 <th class="caption"> Date </th>
                 <th class="caption"> Status </th>
+                <th class="caption"> Details </th>
             </tr>
             </thead>
             <tbody>
@@ -99,9 +110,10 @@ class Start(object):
                         <td><center>%s</center></td>
                         <td><center>%s</center></td>
                         <td><center>%s</center></td>
+                        <td><center><b><a href="/pageerror/?Id=%s">log</a></b></center></td>
                     </tr>
                 ''' % (Committer, JailId[0], Id[2], Port, PortVersion[:-1], \
-                        LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date, Status)
+                        LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
 
 
         yield '''

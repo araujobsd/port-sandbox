@@ -174,34 +174,34 @@ tbody tr.odd:hover		{
 		
 tbody tr th a:link		{
 		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #5E7796;
+		color: #808000;
 		text-decoration: underline;
 		
 		}
 		
 tbody tr th a:visited		{
 		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #5E7796;
+		color: #808000;
 		text-decoration: none;
 		
 		}
 		
 tbody tr th a:hover		{
 		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #5E7796;
+		color: #808000;
 		text-decoration: none;
 		
 		}
 		
 tbody tr th a:active		{
 		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #5E7796;
+		color: #808000;
 		text-decoration: line-through;
 		
 		}
 		
 tbody tr th a:visited:after {
-		content: "\00A0\221A";
+		color: #808000;
 		}
 		
 tbody td a:link		{
@@ -229,9 +229,8 @@ tbody td a:active		{
 		}
 			
 tbody td a:visited:after {
-		content: "\00A0\221A";
 		color: #808000;
-		text-decoration: none;
+		text-decoration: underline;
 		}
 		
 tbody td + td + td + td a { background: transparent url(downloadcss244.gif) no-repeat scroll 0 50%; 
