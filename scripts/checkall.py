@@ -526,7 +526,7 @@ def Init(PortQueue, Id, JailId):
                     cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "%s")' \
                            % (Id, line[2], line[1])
                     cursor.execute(cmd)
-                    qatcheckporterror.CheckPCRFBDI(None, line2, line[3])
+                    qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
                 elif line[1] == 'Lib Depends' and line[0] == 'Error':
                     cmd = 'INSERT INTO NoBuild (Id, PortName, Category) VALUES ("%s", "%s", "%s")' \

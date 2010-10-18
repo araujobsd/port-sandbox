@@ -17,7 +17,6 @@ body {
 /* LINKS AND HEADINGS STYLING */
 
 a { color: #546F92; background: inherit; }
-a:hover { color: #808080; background: inherit; }
 h1  { font: bold 2em "Trebuchet MS", Helvetica, Sans-Serif; margin: 0; color: #fff; background-color:transparent; }
 h2  { font: bold 1.4em "Trebuchet MS", Helvetica, Sans-Serif; }
 h3 { clear: both; font-size: 1.1em; color: #a00; background: #fff no-repeat center left; padding: 0 14px; margin: 0;}
@@ -138,10 +137,6 @@ tfoot tr td, tfoot tr th, tbody tr td	{
 		padding: 8px;
 		}
 		
-tbody tr:hover	{
-		background: #fff;
-		}
-		
 tbody tr	{
 		border: 1px solid #ADBBCA;
 		}
@@ -164,91 +159,3 @@ tbody tr.odd td		{
 		color: #4F6480;
 		}
 		
-
-		
-tbody tr.odd:hover		{
-		background: #fff;
-		}
-		
-
-		
-tbody tr th a:link		{
-		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: underline;
-		
-		}
-		
-tbody tr th a:visited		{
-		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: none;
-		
-		}
-		
-tbody tr th a:hover		{
-		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: none;
-		
-		}
-		
-tbody tr th a:active		{
-		font: bold 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: line-through;
-		
-		}
-		
-tbody tr th a:visited:after {
-		color: #808000;
-		}
-		
-tbody td a:link		{
-		font: normal 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: underline;
-		}
-		
-tbody td a:visited		{
-		font: normal 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: none;
-		}
-		
-tbody td a:hover		{
-		font: normal 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: none;
-		}
-		
-tbody td a:active		{
-		font: normal 0.9em tahoma, arial, sans-serif;
-		color: #808000;
-		text-decoration: underline;
-		}
-			
-tbody td a:visited:after {
-		color: #808000;
-		text-decoration: underline;
-		}
-		
-tbody td + td + td + td a { background: transparent url(downloadcss244.gif) no-repeat scroll 0 50%; 
-			display: block;
-			height: 24px;
-			width: 24px;
-			overflow: hidden;
-			text-decoration: none;
-			text-indent: -5000px;
-			border: none;
-			}
-			
-tbody td + td + td + td a:hover { background: transparent url(downloadcss2441.gif) no-repeat scroll 0 50%; 
-			display: block;
-			height: 24px;
-			width: 24px;
-			overflow: hidden;
-			text-decoration: none;
-			text-indent: -5000px;
-			border: none;
-			}

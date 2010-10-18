@@ -15,7 +15,7 @@
 <tbody>
 <tr>
     #set $Port = $MainPort[1].split('ports/')
-    <td><center>$Port[1]<center></td>
+    <td><center><a href="../$MainPort[2]">$Port[1]</a><center></td>
     #if $MainPort[3] == 0
         <td><center>OK<center></td>
     #else
@@ -23,7 +23,7 @@
     #end if
 
     #if $MainPort[4] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[4] == 0
         <td><center>OK<center></td>
     #else
@@ -31,7 +31,7 @@
     #end if
 
     #if $MainPort[5] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[5] == 0
         <td><center>OK<center></td>
     #else
@@ -39,7 +39,7 @@
     #end if
 
     #if $MainPort[6] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[6] == 0
         <td><center>OK<center></td>
     #else
@@ -47,7 +47,7 @@
     #end if
 
     #if $MainPort[7] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[7] == 0
         <td><center>OK<center></td>
     #else
@@ -55,7 +55,7 @@
     #end if
 
     #if $MainPort[8] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[8] == 0
         <td><center>OK<center></td>
     #else
@@ -63,7 +63,7 @@
     #end if
 
     #if $MainPort[9] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[9] == 0
         <td><center>OK<center></td>
     #else
@@ -71,7 +71,7 @@
     #end if
 
     #if $MainPort[11] == None
-        <td><center>Pass<center></td>
+        <td><center>None<center></td>
     #else if $MainPort[11] == 0
         <td><center>OK<center></td>
     #else
@@ -98,10 +98,10 @@
     #for $libDepends in $LibDepends
         <tr></tr>
         #set $Port = $libDepends[1].split('ports/')
-        <td><center>$Port[1]</center></td>
+        <td><center><a href="../$libDepends[2]">$Port[1]</a></center></td>
 
         #if $libDepends[3] == None
-            <td><center>Pass</center></td>
+            <td><center>None</center></td>
         #else if $libDepends[3] == 0
             <td><center>OK</center></td>
         #else
@@ -109,7 +109,7 @@
         #end if
 
         #if $libDepends[4] == None
-            <td><center>Pass</center></td>
+            <td><center>None</center></td>
         #else if $libDepends[4] == 0
             <td><center>OK</center></td>
         #else
@@ -117,7 +117,7 @@
         #end if
 
         #if $libDepends[5] == None
-            <td><center>Pass</center></td>
+            <td><center>None</center></td>
         #else if $libDepends[4] == 0
             <td><center>OK</center></td>
         #else
@@ -125,7 +125,7 @@
         #end if
 
         #if $libDepends[6] == None
-            <td><center>Pass</center></td>
+            <td><center>None</center></td>
         #else if $libDepends[6] == 0
             <td><center>OK</center></td>
         #else
@@ -137,3 +137,116 @@
     </tr>
     </tbody></table>
 #end if
+
+#if $BuildDepends
+    <br></br>
+    <center><table width="90%">
+    <thead>
+    <tr>
+        <th class="caption"> Build Dependency </th>
+        <th class="caption"> CheckSum </th>
+        <th class="caption"> Extract </th>
+        <th class="caption"> Patch </th>
+        <th class="caption"> Build </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    #for $buildDepends in $BuildDepends
+        <tr></tr>
+        #set $Port = $buildDepends[1].split('ports/')
+        <td><center><a href="$buildDepends[2]">$Port[1]</a></center></td>
+
+        #if $buildDepends[3] == None
+            <td><center>None</center></td>
+        #else if $buildDepends[3] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $buildDepends[4] == None
+            <td><center>None</center></td>
+        #else if $buildDepends[4] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $buildDepends[5] == None
+            <td><center>None</center></td>
+        #else if $buildDepends[5] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $buildDepends[6] == None
+            <td><center>None</center></td>
+        #else if $buildDepends[6] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+    #end for
+    </center>
+    </tr>
+    </tbody></table>
+#end if
+
+#if $RunDepends
+    <br></br>
+    <center><table width="90%">
+    <thead>
+    <tr>
+        <th class="caption"> Run Dependency </th>
+        <th class="caption"> CheckSum </th>
+        <th class="caption"> Extract </th>
+        <th class="caption"> Patch </th>
+        <th class="caption"> Build </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    #for $runDepends in $RunDepends
+        <tr></tr>
+        #set $Port = $runDepends[1].split('ports/')
+        <td><center><a href="../$runDepends[2]">$Port[1]</a></center></td>
+
+        #if $runDepends[3] == None
+            <td><center>None</center></td>
+        #else if $runDepends[3] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $runDepends[4] == None
+            <td><center>None</center></td>
+        #else if $runDepends[4] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $runDepends[5] == None
+            <td><center>None</center></td>
+        #else if $runDepends[5] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $runDepends[6] == None
+            <td><center>None</center></td>
+        #else if $runDepends[6] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+    #end for
+    </center>
+    </tr>
+    </tbody></table>
+#end if
+<br></br>

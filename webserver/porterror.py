@@ -21,17 +21,19 @@ class HandleErrors():
         cmd = 'SELECT * FROM MainPort WHERE Id=%s' % (Id)
         cursor.execute(cmd)
         MainPort = cursor.fetchone()
-        LibDepends = self.LibDependsErrors(MainPort[0])
-        Dict = {"MainPort":MainPort, "LibDepends":LibDepends}
+        LibDepends = self.DependsErrors(MainPort[0], 'LibDepends')
+        BuildDepends = self.DependsErrors(MainPort[0], 'BuildDepends')
+        RunDepends = self.DependsErrors(MainPort[0], 'RunDepends')
+        Dict = {"MainPort":MainPort, "LibDepends":LibDepends, "BuildDepends":BuildDepends, "RunDepends":RunDepends}
 
         Html = Template(file="porterror.tmpl", searchList=[Dict])
 
         return str(Html)
 
 
-    def LibDependsErrors(self, Id):
+    def DependsErrors(self, Id, Table):
 
-        cmd = 'SELECT * FROM LibDepends WHERE Id=%s' % (Id)
+        cmd = 'SELECT * FROM %s WHERE Id=%s' % (Table, Id)
         cursor.execute(cmd)
         Result = cursor.fetchall()
 

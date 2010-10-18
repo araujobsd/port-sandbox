@@ -89,6 +89,20 @@ def PortSum(IdMainPort, Table, Port, JailId):
     Dir, Log = LogDepends(IdMainPort, Port, Table)
     logcreator.LogCreator('CheckSum', CheckSumReason, Dir, Log, None)
 
+    cmd = 'SELECT PortLog FROM %s WHERE Id=%s and PortName="%s"' \
+            % (Table, IdMainPort, Port)
+    cursor.execute(cmd)
+    CheckLog = cursor.fetchall()
+
+    print "+++++++++++ %s" % (CheckLog[0])
+    if CheckLog[0]:
+        print "Entrou ++++++++++++++++"
+        LogDir = Dir + Log
+        cmd = 'UPDATE %s SET PortLog="%s" WHERE id=%s and PortName="%s"' \
+                % (Table, LogDir, IdMainPort, Port)
+        cursor.execute(cmd)
+        database.commit()
+
     if CheckSumControl == 0:
         return 0
     else:

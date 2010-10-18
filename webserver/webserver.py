@@ -54,6 +54,7 @@ class Start(object):
                 [ <a>Build OK: <img src="images/green.png" alt="OK" width="15"/></a> ]
                 [ <a>Build Error: <img src="images/red.png" alt="ERROR" width="15"/></a> ]
                 [ <a>Dependency Error: <img src="images/yellow.png" alt="Dep Error" width="15"/></a> ]
+                [ <a>Plist Error: <img src="images/orange.png" alt="Plist Error" width="15"/></a> ]
                 </right>
 
             '''
@@ -81,39 +82,80 @@ class Start(object):
         for result in QueueResult:
             if result[5] == 1:
                 Id = psb.MainPort(result[0])
-                Committer = Id[10]
-                Port = result[1]
-                Date = result[4]
-                LibDependsQuant = psb.DependsQuant("LibDepends", Id[0])
-                BuildDependsQuant = psb.DependsQuant("BuildDepends", Id[0])
-                RunDependsQuant = psb.DependsQuant("RunDepends", Id[0])
+                if Id:
+                    Committer = Id[10]
+                    Port = result[1]
+                    Date = result[4]
+                    LibDependsQuant = psb.DependsQuant("LibDepends", Id[0])
+                    BuildDependsQuant = psb.DependsQuant("BuildDepends", Id[0])
+                    RunDependsQuant = psb.DependsQuant("RunDepends", Id[0])
 
-                PortVersion = Id[2].split('/')
-                PortVersion = PortVersion[3].split('log')
-                PortVersion = PortVersion[0]
-                Status = result[2]
-                JailId = psb.JailName(result[3])
+                    PortVersion = Id[2].split('/')
+                    PortVersion = PortVersion[3].split('log')
+                    PortVersion = PortVersion[0]
+                    JailId = psb.JailName(result[3])
 
-                if Status == 1:
-                    Status = '<img src="images/red.png" alt="ERROR" width="15"/>'
-                if Status == 0:
-                    Status = '<img src="images/green.png" alt="OK" width="15"/>'
+                    # Check if there is any dependency with error.
+                    # Set the yellow daemon then.
+                    DependsError = porterror.HandleErrors()
+                    LibError = DependsError.DependsErrors(Id[0], 'LibDepends')
+                    BuilError = DependsError.DependsErrors(Id[0], 'BuildDepends')
+                    RunError = DependsError.DependsErrors(Id[0], 'RunDepends')
+                    ControlDepError = 0
 
-                yield '''
-                    <tr>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center><a href="%s">%s</a></center></td>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center>%s</center></td>
-                        <td><center><b><a href="/pageerror/?Id=%s">log</a></b></center></td>
-                    </tr>
-                ''' % (Committer, JailId[0], Id[2], Port, PortVersion[:-1], \
-                        LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
+                    for libError in LibError:
+                        if libError[3] != 0 or libError[4] != 0 or \
+                                libError[5] != 0 or libError[6] != 0 or \
+                                libError[7] != 0: ControlDepError = 1
+
+                    for buildError in BuilError:
+                        if buildError[3] != 0 or buildError[4] != 0 or \
+                                buildError[5] != 0 or buildError[6] != 0 or \
+                                buildError[7] != 0: ControlDepError = 1
+
+                    for runError in RunError:
+                        if runError[3] != 0 or runError[4] != 0 or \
+                                runError[5] != 0 or runError[6] != 0 \
+                                : ControlDepError = 1
+
+                    # Check if the MainPort are OK to show the green daemon.
+                    MainPort = psbdatabase.Select()
+                    mainPort = MainPort.MainPort(Id[0])
+                    MainPortError = 0
+                    PlistError = 0
+
+                    if mainPort[3] != 0 or mainPort[4] != 0 or mainPort[5] != 0 or \
+                            mainPort[6] != 0 or mainPort[7] != 0 or \
+                            mainPort[8] != 0 or mainPort[9] != 0: MainPortError = 1
+                    if mainPort[11] != 0:
+                        PlistError = 1
+
+
+                    if MainPortError == 1 and ControlDepError == 0:
+                        Status = '<img src="images/red.png" alt="ERROR" width="15"/>'
+                    if MainPortError == 0 and ControlDepError == 0 and \
+                            PlistError == 0:
+                        Status = '<img src="images/green.png" alt="OK" width="15"/>'
+                    if ControlDepError == 1:
+                        Status = '<img src="images/yellow.png" alt="DEPS ERROR" width="15"/>'
+                    if PlistError == 1 and ControlDepError == 0:
+                        Status = '<img src="images/orange.png" alt="PLIST ERROR" width="15"/>'
+
+                    yield '''
+                        <tr>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center><a href="%s">%s</a></center></td>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center>%s</center></td>
+                            <td><center><b><A href="/pageerror/?Id=%s" title="Teste">log</b></A></center></td>
+                        </tr>
+                    ''' % (Committer, JailId[0], Id[2], Port, PortVersion[:-1], \
+                            LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
 
 
         yield '''
