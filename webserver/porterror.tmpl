@@ -1,0 +1,139 @@
+<center><table width="90%">
+<thead>
+<tr>
+    <th class="caption"> Main Port </th>
+    <th class="caption"> CheckSum </th>
+    <th class="caption"> Extract </th>
+    <th class="caption"> Patch </th>
+    <th class="caption"> Build </th>
+    <th class="caption"> Install </th>
+    <th class="caption"> Package </th>
+    <th class="caption"> Deinstall </th>
+    <th class="caption"> PLIST </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    #set $Port = $MainPort[1].split('ports/')
+    <td><center>$Port[1]<center></td>
+    #if $MainPort[3] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[4] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[4] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[5] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[5] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[6] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[6] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[7] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[7] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[8] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[8] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[9] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[9] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+    #if $MainPort[11] == None
+        <td><center>Pass<center></td>
+    #else if $MainPort[11] == 0
+        <td><center>OK<center></td>
+    #else
+        <td><center>Error<center></td>
+    #end if
+
+</tr>
+</center>
+</tbody></table>
+#if $LibDepends
+    <br></br>
+    <center><table width="90%">
+    <thead>
+    <tr>
+        <th class="caption"> Lib Dependency </th>
+        <th class="caption"> CheckSum </th>
+        <th class="caption"> Extract </th>
+        <th class="caption"> Patch </th>
+        <th class="caption"> Build </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    #for $libDepends in $LibDepends
+        <tr></tr>
+        #set $Port = $libDepends[1].split('ports/')
+        <td><center>$Port[1]</center></td>
+
+        #if $libDepends[3] == None
+            <td><center>Pass</center></td>
+        #else if $libDepends[3] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $libDepends[4] == None
+            <td><center>Pass</center></td>
+        #else if $libDepends[4] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $libDepends[5] == None
+            <td><center>Pass</center></td>
+        #else if $libDepends[4] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+        #if $libDepends[6] == None
+            <td><center>Pass</center></td>
+        #else if $libDepends[6] == 0
+            <td><center>OK</center></td>
+        #else
+            <td><center>Error</center></td>
+        #end if
+
+    #end for
+    </center>
+    </tr>
+    </tbody></table>
+#end if
