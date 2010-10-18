@@ -414,24 +414,25 @@ def Init(PortQueue, Id, JailId):
                 sql.Checking(last[0], Table, 0) <-- Doesn't Build
                 sql.Checking(last[0], Table, 1) <-- Does Build
             """
-            # Check LibDepends
-            Table = "LibDepends"
-            sql.Checking(last[0], Table, 0, JailId)
-            # Check BuildDepends
-            Table = "BuildDepends"
-            sql.Checking(last[0], Table, 0, JailId)
-            # Check RunDepends
-            Table = "RunDepends"
-            sql.Checking(last[0], Table, 0, JailId)
-            # Build LibDepends
-            Table = "LibDepends"
-            sql.Checking(last[0], Table, 1, JailId)
-            # Build BuildDepends
-            Table = "BuildDepends"
-            sql.Checking(last[0], Table, 1, JailId)
-            # Build RunDepends
-            Table = "RunDepends"
-            sql.Checking(last[0], Table, 1, JailId)
+            if PatchControl == 0:
+                # Check LibDepends
+                Table = "LibDepends"
+                sql.Checking(last[0], Table, 0, JailId)
+                # Check BuildDepends
+                Table = "BuildDepends"
+                sql.Checking(last[0], Table, 0, JailId)
+                # Check RunDepends
+                Table = "RunDepends"
+                sql.Checking(last[0], Table, 0, JailId)
+                # Build LibDepends
+                Table = "LibDepends"
+                sql.Checking(last[0], Table, 1, JailId)
+                # Build BuildDepends
+                Table = "BuildDepends"
+                sql.Checking(last[0], Table, 1, JailId)
+                # Build RunDepends
+                Table = "RunDepends"
+                sql.Checking(last[0], Table, 1, JailId)
 
             # Check if every port related with the MainPort is OK
             Table = "MainPort"
@@ -462,7 +463,8 @@ def Init(PortQueue, Id, JailId):
                     RunControler = 1
 
             # Test MainPort
-            if LibControler == 0 and BuildControler == 0 and RunControler == 0:
+            if LibControler == 0 and BuildControler == 0 and RunControler == 0 and \
+                    PatchControl == 0:
                 sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference, JailId)
                 qatchecksum.MtreeCheck('Before', JailId)
                 sql.PortInstall(last[0], Table, PortReferenceDir, PortReference, JailId)
