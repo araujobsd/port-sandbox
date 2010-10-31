@@ -172,9 +172,14 @@ class JailEngine:
         os.system('devfs -m %s/dev rule apply path null unhide' % (BuildDir))
         os.system('mkdir %s/usr/ports' % (BuildDir))
         os.system('mount_nullfs /usr/ports %s/usr/ports' % (BuildDir))
-        os.system('mount_nullfs /var %s/var' % (BuildDir))
+        #os.system('mount_nullfs /var %s/var' % (BuildDir))
         os.system('mkdir %s/usr/src' % (BuildDir))
         os.system('mount_nullfs /usr/src %s/usr/src' % (BuildDir))
+        os.system('cp /etc/resolv.conf %s/etc' % (BuildDir))
+        os.system('mtree -deU -f %s/etc/mtree/BSD.root.dist -p %s/' % (BuildDir, BuildDir))
+        os.system('mtree -deU -f %s/etc/mtree/BSD.var.dist -p %s/var' % (BuildDir, BuildDir))
+        os.system('mtree -deU -f %s/etc/mtree/BSD.usr.dist -p %s/usr' % (BuildDir, BuildDir))
+        os.system('mtree -deU -f %s/usr/ports/Templates/BSD.local.dist -p %s/usr/local' % (BuildDir, BuildDir))
 
 
 
