@@ -10,6 +10,20 @@ database.select_db('portsandbox')
 cursor = database.cursor()
 _curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 
+class AllPortsInQueue(object):
+
+    @cherrypy.expose
+    def index(self):
+        psb = psbdatabase.Select()
+        start = Start()
+        header = start.header()
+        footer = start.footer()
+        result = psb.AllPortsInQueue()
+        yield header
+        yield str(result)
+        yield footer
+
+
 class PageError(object):
 
 
@@ -21,15 +35,13 @@ class PageError(object):
         header = start.header()
         footer = start.footer()
         yield header
-
         yield Result
-
         yield footer
 
 
 class Start(object):
 
-
+    allportsinqueue = AllPortsInQueue()
     pageerror = PageError()
 
     @cherrypy.expose
@@ -45,7 +57,7 @@ class Start(object):
         NextBuild = str(NextBuild[0])
 
         yield '''
-            <center><table width='90%' class='caption'>
+            <center><table width=800 class='caption'>
             <td>Next port in queue:
         '''
         yield '''<a> <b>%s</b></a>''' % (NextBuild)
@@ -61,7 +73,7 @@ class Start(object):
         yield '</td></td></center></table><p></p>'
 
         yield '''
-            <center><table width="90%">
+            <center><table width=800>
             <thead>
             <tr>
                 <th class="caption"> Committer </th>
