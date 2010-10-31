@@ -101,44 +101,79 @@ class Start(object):
                     LibError = DependsError.DependsErrors(Id[0], 'LibDepends')
                     BuilError = DependsError.DependsErrors(Id[0], 'BuildDepends')
                     RunError = DependsError.DependsErrors(Id[0], 'RunDepends')
-                    ControlDepError = 0
 
                     for libError in LibError:
-                        if libError[3] != 0 or libError[4] != 0 or \
-                                libError[5] != 0 or libError[6] != 0 or \
-                                libError[7] != 0: ControlDepError = 1
+                        if libError[3] == 1 or libError[4] == 1 or \
+                                libError[5] == 1 or libError[6] == 1:
+                                    ControlDepError = 1
+                        elif libError[3] == None or libError[4] == None or \
+                                libError[5] == None or libError[6] == None:
+                                    ControlDepError = 2
+                        elif libError[3] == 0 and libError[4] == 0 and \
+                                libError[5] == 0 and libError[6] == 0:
+                                    ControlDepError = 0
 
                     for buildError in BuilError:
-                        if buildError[3] != 0 or buildError[4] != 0 or \
-                                buildError[5] != 0 or buildError[6] != 0 or \
-                                buildError[7] != 0: ControlDepError = 1
+                        if buildError[3] == 1 or buildError[4] == 1 or \
+                                buildError[5] == 1 or buildError[6] == 1:
+                                    ControlDepError = 1
+                        elif buildError[3] == None or buildError[4] == None or \
+                                buildError[5] == None or buildError[6] == None:
+                                    ControlDepError = 2
+                        elif buildError[3] == 0 and buildError[4] == 0 and \
+                                buildError[5] == 0 and buildError[6] == 0:
+                                    ControlDepError = 0
 
                     for runError in RunError:
-                        if runError[3] != 0 or runError[4] != 0 or \
-                                runError[5] != 0 or runError[6] != 0 \
+                        if runError[3] == 1 or runError[4] == 1 or \
+                                runError[5] == 1 or runError[6] == 1 \
                                 : ControlDepError = 1
+                        elif runError[3] == None or runError[4] == None or \
+                                runError[5] == None or runError[6] == None:
+                                    ControlDepError = 2
+                        elif runError[3] == 0 and runError[4] == 0 and \
+                                runError[5] == 0 and runError[6] == 0:
+                                    ControlDepError = 0
 
                     # Check if the MainPort are OK to show the green daemon.
                     MainPort = psbdatabase.Select()
                     mainPort = MainPort.MainPort(Id[0])
                     MainPortError = 0
-                    PlistError = 0
+                    MainPortNotFinished = 0
+                    Status = 0
+
+                    # If there is no dependencies
+                    try:
+                        ControlDepError
+                    except:
+                        ControlDepError = 3
 
                     if mainPort[3] != 0 or mainPort[4] != 0 or mainPort[5] != 0 or \
                             mainPort[6] != 0 or mainPort[7] != 0 or \
                             mainPort[8] != 0 or mainPort[9] != 0: MainPortError = 1
-                    if mainPort[11] != 0:
+                    elif mainPort[3] == None or mainPort[4] == None or \
+                            mainPort[5] == None or mainPort[6] == None or \
+                            mainPort[7] == None or mainPort[8] == None or \
+                            mainPort[8] == None or mainPort[9] == None:
+                                MainPortError = 2
+
+
+                    if mainPort[11] == 0:
+                        PlistError = 0
+                    elif mainPort[11] == 512:
                         PlistError = 1
+                    elif mainPort[11] == None:
+                        PlistError = 2
 
-
-                    if MainPortError == 1 and ControlDepError == 0:
+                    if MainPortError == 1 and ControlDepError == 2 and PlistError == 2 or \
+                            MainPortError == 1 and ControlDepError == 0 and PlistError == 2:
                         Status = '<img src="images/red.png" alt="ERROR" width="15"/>'
-                    if MainPortError == 0 and ControlDepError == 0 and \
-                            PlistError == 0:
+                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 0 or \
+                        MainPortError == 0 and ControlDepError == 2  and PlistError == 0 or MainPortError == 0 and ControlDepError == 3 and PlistError == 0:
                         Status = '<img src="images/green.png" alt="OK" width="15"/>'
-                    if ControlDepError == 1:
+                    if MainPortError == 1 and ControlDepError == 1 and PlistError == 2:
                         Status = '<img src="images/yellow.png" alt="DEPS ERROR" width="15"/>'
-                    if PlistError == 1 and ControlDepError == 0:
+                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 1 or MainPortError == 0 and ControlDepError == 3 and PlistError == 1:
                         Status = '<img src="images/orange.png" alt="PLIST ERROR" width="15"/>'
 
                     yield '''
@@ -152,7 +187,7 @@ class Start(object):
                             <td><center>%s</center></td>
                             <td><center>%s</center></td>
                             <td><center>%s</center></td>
-                            <td><center><b><A href="/pageerror/?Id=%s" title="Teste">log</b></A></center></td>
+                            <td><center><A href="/pageerror/?Id=%s" title="Teste">log</A></center></td>
                         </tr>
                     ''' % (Committer, JailId[0], Id[2], Port, PortVersion[:-1], \
                             LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
