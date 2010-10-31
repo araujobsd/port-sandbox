@@ -170,21 +170,46 @@ def MtreeCheck(Phase, JailId):
     Jail = jail.JailEngine()
     jailpath = Jail.JailPath(JailId)
 
-    mtree = 'mtree -c -i -n -k uname,gname,mode,nochange -p /usr/local/'
+    StdiffConf = open('/tmp/stdiff.conf', 'w')
+    StdiffConf.write("""
+        db_type = dbm
+        db = /tmp/fs.dbm
+        # What we won't check - By Araujo
+        !%s/root
+        !%s/var
+        !%s/tmp
+        !%s/work
+        !%s/compat/linux/proc
+        !%s/proc
+        !%s/usr/src
+        !%s/usr/ports
+        !%s/usr/local/lib/X11/xserver/SecurityPolicy
+        !%s/usr/local/share/nls/POSIX
+        !%s/usr/local/share/nls/en_US.US-ASCII
+        !%s/usr/local/info/dir
+        !%s/usr/local/lib/X11/fonts
+        !%s/boot
+        !%s/dev
+        !%s/media
+        !%s/rescue
+        !%s/sys
+        %s spug
+    """ % (jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath))
+    StdiffConf.close()
+
 
     if Phase == 'Before':
-        mtreebefore = commands.getstatusoutput('chroot %s /bin/csh -c "%s >/tmp/before"' \
-                                               % (jailpath, mtree))
-    elif Phase == 'After':
-        mtreeafter = commands.getstatusoutput('chroot %s /bin/csh -c "%s >/tmp/after"' \
-                                              % (jailpath, mtree))
+        mtreebefore = commands.getstatusoutput('stdiff.py -C /tmp/stdiff.conf -u')
+    elif Phase == 'Install':
+        mtreeafter = commands.getstatusoutput('stdiff.py -C /tmp/stdiff.conf -u -o /tmp/diff')
+    elif Phase == 'Deinstall':
+        mtreeafter = commands.getstatusoutput('stdiff.py -C /tmp/stdiff.conf -u -o /tmp/diff')
     elif Phase == 'Diff':
-        mtree = 'mtree -f /tmp/after -f /tmp/before'
-        diff = commands.getstatusoutput('chroot %s /bin/csh -c "%s"' % (jailpath, mtree))
-        return diff
+        diff = commands.getstatusoutput('stdiff.py -C /tmp/stdiff.conf -c -o /tmp/diff')
+        result = commands.getstatusoutput('cat /tmp/diff')
+        return result
     elif Phase == 'Clean':
-        rm = commands.getstatusoutput('chroot %s /bin/csh -c "rm -f /tmp/before /tmp/after"' \
-                % (jailpath))
+        rm = commands.getstatusoutput('rm -f /tmp/stdiff.conf /tmp/diff')
 
 
 

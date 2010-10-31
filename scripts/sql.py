@@ -94,9 +94,7 @@ def PortSum(IdMainPort, Table, Port, JailId):
     cursor.execute(cmd)
     CheckLog = cursor.fetchall()
 
-    print "+++++++++++ %s" % (CheckLog[0])
     if CheckLog[0]:
-        print "Entrou ++++++++++++++++"
         LogDir = Dir + Log
         cmd = 'UPDATE %s SET PortLog="%s" WHERE id=%s and PortName="%s"' \
                 % (Table, LogDir, IdMainPort, Port)

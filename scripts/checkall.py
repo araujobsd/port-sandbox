@@ -470,16 +470,22 @@ def Init(PortQueue, Id, JailId):
                 sql.PortInstall(last[0], Table, PortReferenceDir, PortReference, JailId)
                 sql.MakePackage(last[0], Table, PortReferenceDir, PortReference, JailId)
                 sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference, JailId)
-                qatchecksum.MtreeCheck('After', JailId)
                 diff = qatchecksum.MtreeCheck('Diff', JailId)
-                if diff[0] == 0:
+                diff_size = len(diff[1])
+
+                if diff_size == 208:
+                    PlistCodeError = 0
                     print '===> PLIST RESULT: OK'
-                elif diff[0] == 512:
+                    cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
+                          % (PlistCodeError, last[0])
+                elif diff_size > 208:
+                    PlistCodeError = 512
                     print '===> PLIST RESULT: NOK'
-                logcreator.LogCreator('PLIST: /usr/local/', diff[1], None, None, last[0])
+                    cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
+                          % (PlistCodeError, last[0])
+
+                logcreator.LogCreator('PLIST', diff[1], None, None, last[0])
                 qatchecksum.MtreeCheck('Clean', JailId)
-                cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
-                      % (diff[0], last[0])
                 cursor.execute(cmd)
                 database.commit()
 
