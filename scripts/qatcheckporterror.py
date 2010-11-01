@@ -32,6 +32,7 @@
 
 import commands
 import MySQLdb
+import configparser
 
 def CheckPortError(file):
 
@@ -104,9 +105,12 @@ def Ignore(port):
 
 def CheckPCRFBDI(Id, port,offset):
 
+    conf = configparser.MySQL()
+    host, user, password, db = conf.config()
+
     try:
-        database = MySQLdb.connect('localhost', 'root', '')
-        database.select_db('portsandbox')
+        database = MySQLdb.connect(host, user, password)
+        database.select_db(db)
         cursor = database.cursor()
     except:
         print "Error connecting to the database....\n"

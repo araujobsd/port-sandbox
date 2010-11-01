@@ -38,7 +38,7 @@ import qatchecksum
 import sql
 import logcreator
 import pcvs
-import sys
+import configparser
 sys.path.append('jail')
 import jail
 
@@ -345,9 +345,12 @@ def Init(PortQueue, Id, JailId):
             File = open(PortReference, 'r')
             #pcvs.CvsCheckOut(PortReference)
 
+            conf = configparser.MySQL()
+            host, user, password, db = conf.config()
+
             try:
-                database = MySQLdb.connect('localhost', 'root', '')
-                database.select_db('portsandbox')
+                database = MySQLdb.connect(host, user, password)
+                database.select_db(db)
                 cursor = database.cursor()
             except:
                 print "Error connecting to the database....\n"
@@ -465,20 +468,20 @@ def Init(PortQueue, Id, JailId):
             # Test MainPort
             if LibControler == 0 and BuildControler == 0 and RunControler == 0 and \
                     PatchControl == 0:
-                sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference, JailId)
                 qatchecksum.MtreeCheck('Before', JailId)
-                sql.PortInstall(last[0], Table, PortReferenceDir, PortReference, JailId)
-                sql.MakePackage(last[0], Table, PortReferenceDir, PortReference, JailId)
-                sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference, JailId)
+                PBuild = sql.PortBuild(last[0], Table, None, PortReferenceDir, PortReference, JailId)
+                PInstall = sql.PortInstall(last[0], Table, PortReferenceDir, PortReference, JailId)
+                PPackage = sql.MakePackage(last[0], Table, PortReferenceDir, PortReference, JailId)
+                PDeinstall = sql.PortDeinstall(last[0], Table, PortReferenceDir, PortReference, JailId)
                 diff = qatchecksum.MtreeCheck('Diff', JailId)
                 diff_size = len(diff[1])
 
-                if diff_size == 208:
+                if diff_size == 208 and PDeinstall == 0:
                     PlistCodeError = 0
                     print '===> PLIST RESULT: OK'
                     cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
                           % (PlistCodeError, last[0])
-                elif diff_size > 208:
+                elif diff_size > 208 and PDeinstall == 0:
                     PlistCodeError = 512
                     print '===> PLIST RESULT: NOK'
                     cmd = 'UPDATE MainPort SET MtreeControl="%s" WHERE id="%s"' \
@@ -512,9 +515,12 @@ def Init(PortQueue, Id, JailId):
             print "PORT NOK"
             QueueResult = 1
 
+            conf = configparser.MySQL()
+            host, user, password, db = conf.config()
+
             try:
-                database = MySQLdb.connect('localhost', 'root', '')
-                database.select_db('portsandbox')
+                database = MySQLdb.connect(host, user, password)
+                database.select_db(db)
                 cursor = database.cursor()
             except:
                 print "Error connecting to the database.....\n"
@@ -546,5 +552,7 @@ def Init(PortQueue, Id, JailId):
                     cursor.execute(cmd)
                     qatcheckporterror.CheckPCRFBDI(None, line[2], line[3])
                     database.commit()
+
+            File.close()
             return QueueResult
 

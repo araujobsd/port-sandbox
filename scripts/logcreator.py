@@ -5,9 +5,13 @@
 import os
 import random
 import MySQLdb
+import configparser
 
-database = MySQLdb.connect('localhost', 'root', '')
-database.select_db('portsandbox')
+conf = configparser.MySQL()
+host, user, password, db = conf.config()
+
+database = MySQLdb.connect(host, user, password)
+database.select_db(db)
 cursor = database.cursor()
 
 def LogCreator(Phase, Output, PathLog, LogName, LastId):
@@ -66,3 +70,4 @@ def RefactoryCheckDeps(LogFile):
     for line in ListUniq:
         LogUniq.write(str(line))
     LogUniq.close()
+

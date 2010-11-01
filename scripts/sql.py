@@ -6,10 +6,13 @@ import commands
 import MySQLdb
 import qatchecksum
 import logcreator
+import configparser
 
+conf = configparser.MySQL()
+host, user, password, db = conf.config()
 
-database = MySQLdb.connect('localhost', 'root', '')
-database.select_db('portsandbox')
+database = MySQLdb.connect(host, user, password)
+database.select_db(db)
 cursor = database.cursor()
 
 def GetCommitter(Last):
@@ -77,7 +80,6 @@ def Checking(Last, Table, StartBuild, JailId):
         # Should I check the PatchControl(SQL) before? Yes, I think so!
         if StartBuild == 1:
             BuildControl = PortBuild(Last, Table, Port[0], None, None, JailId)
-
 
 def PortSum(IdMainPort, Table, Port, JailId):
 
@@ -197,6 +199,17 @@ def PortBuild(IdMainPort, Table, PortName, PortReferenceDir, PortReference, Jail
                 % (Table, BuildControl, IdMainPort, PortName)
         cursor.execute(cmd)
         database.commit()
+
+        # Install Dependencies.
+        # But before check if it isn't the MainPort, because we won't install
+        # the MainPort twice.
+        cmd = 'SELECT PortName FROM MainPort WHERE id=%s' % (IdMainPort)
+        cursor.execute(cmd)
+        result = cursor.fetchone()
+        PortNameDeps = result[0]
+        if PortNameDeps != PortName:
+            InstallControl, InstallReason = qatchecksum.InstallPort(PortName, JailId)
+
         if PortReference != None:
             logcreator.LogCreator('Build', BuildReason, PortReferenceDir,\
                                    PortReference, IdMainPort)
@@ -250,7 +263,6 @@ def MakePackage(IdMainPort, Table, PortReferenceDir, PortReference, JailId):
         return 0
     else:
         return 1
-
 
 def PortDeinstall(IdMainPort, Table, PortReferenceDir, PortReference, JailId):
 

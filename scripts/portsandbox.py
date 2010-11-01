@@ -8,9 +8,14 @@ import MySQLdb
 import Queue
 import datetime
 import checkall
+import cleangarbage
+import configparser
 
-database = MySQLdb.connect('localhost', 'root', '')
-database.select_db('portsandbox')
+conf = configparser.MySQL()
+host, user, password, db = conf.config()
+
+database = MySQLdb.connect(host, user, password)
+database.select_db(db)
 cursor = database.cursor()
 
 class Job(object):
@@ -30,6 +35,7 @@ class Job(object):
         cmd = 'UPDATE Queue SET StartBuild="%s" WHERE Id=%s' % (date[0], Id)
         cursor.execute(cmd)
         database.commit()
+        cleangarbage.CleanPreLog()
 
         return
 

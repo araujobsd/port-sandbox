@@ -7,10 +7,14 @@
 import MySQLdb
 import sys
 import checkall
+import configparser
 from datetime import datetime
 
-database = MySQLdb.connect('localhost', 'root', '')
-database.select_db('portsandbox')
+conf = configparser.MySQL()
+host, user, password, db = conf.config()
+
+database = MySQLdb.connect(host, user, password)
+database.select_db(db)
 cursor = database.cursor()
 
 if __name__ == '__main__':
