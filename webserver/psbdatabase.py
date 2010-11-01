@@ -68,7 +68,7 @@ class Select():
 
     def AllPortsInQueue(self):
 
-        cmd = 'SELECT Port, JailId FROM Queue WHERE StatusBuild=0'
+        cmd = 'SELECT Id, Port, JailId FROM Queue WHERE StatusBuild=0'
         cursor.execute(cmd)
         Result = cursor.fetchall()
         NoQueue = ['There is no PORT in the queue...']

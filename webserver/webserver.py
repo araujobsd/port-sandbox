@@ -19,8 +19,31 @@ class AllPortsInQueue(object):
         header = start.header()
         footer = start.footer()
         result = psb.AllPortsInQueue()
+
         yield header
-        yield str(result)
+        yield '''
+            <center><table width=800>
+            <thead>
+            <tr>
+                <th class="caption"> Jail </th>
+                <th class="caption"> Port Directory </th>
+                <th class="caption"> Position </th>
+            </tr>
+            </thead>
+            <tbody>
+        '''
+
+        count = 0
+
+        for portId, port, jailid in result:
+            count = count + 1
+            yield '<tr>'
+            yield '<td><center>' + str(psb.JailName(jailid)[0]) + '</center></td>'
+            yield '<td><center>' + port + '</center></td>'
+            yield '<td><center>' + str(count) + '</center></td>'
+            yield '</tr>'
+
+        yield '</table>'
         yield footer
 
 
