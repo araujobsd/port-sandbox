@@ -33,7 +33,7 @@
         #set $Port = $line[1].split('ports/')
         #if $line[2] == 'Main'
             <tr>
-                <td><center><b>$Date_Show</a></b></center></td>
+                <td><center>$Date_Show</a></center></td>
                 <td><center><b>Main Port</a></b></center></td>
                 <td><center><b>$Port[1]</b></center></td>
                 #if $line[3] == 1
@@ -76,43 +76,43 @@
             #if $compare[0] == $line[0]
                 #if $compare[2] != 'Main'
                     #set $Port = $compare[1].split('ports/')
-                    <td><center><b></a></b></center></td>
+                    <td><center></center></td>
                     <td><center><i><font color="red">$compare[2]</i></font></center></td>
                     <td><center><i><font color="red">$Port[1]</font></i></center></td>
                 #if $compare[3] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[9]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[9]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[4] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[10]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[10]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[5] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[11]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[11]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[6] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[12]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[12]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[7] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[13]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[13]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[8] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[14]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[14]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #if $compare[16] == 1
-                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[15]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="10"/></a></center></td>
+                    <td><center><a href="javascript:void(0);" onmouseover="return dls('$compare[15]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
-                    <td><center><img src="../images/green.png" alt="Error" width="10"/></center></td>
+                    <td><center><img src="../images/green.png" alt="Error" width="15"/></center></td>
                 #end if
                 #end if
             #end if

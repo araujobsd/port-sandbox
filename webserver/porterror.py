@@ -24,6 +24,7 @@ class HandleErrors():
         LibDepends = self.DependsErrors(MainPort[0], 'LibDepends')
         BuildDepends = self.DependsErrors(MainPort[0], 'BuildDepends')
         RunDepends = self.DependsErrors(MainPort[0], 'RunDepends')
+
         Dict = {"MainPort":MainPort, "LibDepends":LibDepends, "BuildDepends":BuildDepends, "RunDepends":RunDepends}
 
         Html = Template(file="porterror.tmpl", searchList=[Dict])

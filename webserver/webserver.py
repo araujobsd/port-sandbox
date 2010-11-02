@@ -37,6 +37,19 @@ class NoBuild(object):
 
 class AllPortsInQueue(object):
 
+
+    @cherrypy.expose
+    def AddPort(self, jail, port):
+
+        PortDir = '/usr/ports/' + str(port)
+        if os.path.isdir(PortDir):
+            print port
+            print jail
+            os.system("cd ../scripts/ ; ./init.py add %s %s" % (port, jail))
+
+        raise cherrypy.InternalRedirect('/allportsinqueue/')
+
+
     @cherrypy.expose
     def index(self):
 
@@ -45,8 +58,31 @@ class AllPortsInQueue(object):
         header = start.header()
         footer = start.footer()
         result = psb.AllPortsInQueue()
+        jailname = psb.JailName(None)
 
         yield header
+        yield '''
+            <center><table width=800>
+            <right><td align="right">
+
+            <form action="AddPort" method="post">
+            <b>Jail: </b>
+            <select name="jail">
+        '''
+        for names in jailname:
+            yield '<option value="%s">%s</option>' \
+                    % (names[0], names[1])
+
+        yield '''
+            </select>
+            <b>Port: </b>
+            <input type="text" name="port" value="category/port" />
+            <input type="submit" value="Add">
+            </right></td></center></table><p></p>
+
+            </form>
+        '''
+
 
         offset = 0
 

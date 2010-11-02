@@ -15,7 +15,7 @@ class Select():
 
     def Queue(self):
 
-        cmd = 'SELECT Id, Port, Status, JailId, StartBuild, StatusBuild FROM Queue ORDER BY Id DESC LIMIT 12'
+        cmd = 'SELECT Id, Port, Status, JailId, StartBuild, StatusBuild FROM Queue ORDER BY Id DESC LIMIT 18'
         cursor.execute(cmd)
         Result = cursor.fetchall()
 
@@ -24,9 +24,16 @@ class Select():
 
     def JailName(self, JailId):
 
-        cmd = 'SELECT JailName FROM Jail WHERE Id=%s' % (JailId)
-        cursor.execute(cmd)
-        Result = cursor.fetchone()
+        Result = None
+
+        if JailId == None:
+            cmd = 'SELECT Id, JailName FROM Jail'
+            cursor.execute(cmd)
+            Result = cursor.fetchall()
+        else:
+            cmd = 'SELECT JailName FROM Jail WHERE Id=%s' % (JailId)
+            cursor.execute(cmd)
+            Result = cursor.fetchone()
 
         return Result
 
