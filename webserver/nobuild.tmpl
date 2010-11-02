@@ -11,6 +11,7 @@
 <center><table width=800>
 <thead>
 <tr>
+    <th class="caption"> Date </th>
     <th class="caption"> Classification </th>
     <th class="caption"> Port </th>
     <th class="caption"> No Package </th>
@@ -24,9 +25,15 @@
 </thead>
 <tbody>
     #for $line in $NoBuild
+        #for $date in $Date
+            #if $date[0] == $line[0]
+                #set $Date_Show = $date[1]
+            #end if
+        #end for
         #set $Port = $line[1].split('ports/')
         #if $line[2] == 'Main'
             <tr>
+                <td><center><b>$Date_Show</a></b></center></td>
                 <td><center><b>Main Port</a></b></center></td>
                 <td><center><b>$Port[1]</b></center></td>
                 #if $line[3] == 1
@@ -69,6 +76,7 @@
             #if $compare[0] == $line[0]
                 #if $compare[2] != 'Main'
                     #set $Port = $compare[1].split('ports/')
+                    <td><center><b></a></b></center></td>
                     <td><center><i><font color="red">$compare[2]</i></font></center></td>
                     <td><center><i><font color="red">$Port[1]</font></i></center></td>
                 #if $compare[3] == 1

@@ -46,7 +46,11 @@ class HandleErrors():
         cursor.execute(cmd)
         Result = cursor.fetchall()
 
-        Dict = {"NoBuild":Result}
+        cmd = 'SELECT Id, StartBuild FROM Queue'
+        cursor.execute(cmd)
+        Date = cursor.fetchall()
+
+        Dict = {"NoBuild":Result, "Date":Date}
         Html = Template(file="nobuild.tmpl", searchList=[Dict])
 
         return str(Html)
