@@ -10,10 +10,36 @@ database.select_db('portsandbox')
 cursor = database.cursor()
 _curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 
+class Fails(object):
+
+    @cherrypy.expose
+    def index(self):
+
+        psb = psbdatabase.Select()
+
+
+class NoBuild(object):
+
+    @cherrypy.expose
+    def index(self):
+
+        NoBuild = porterror.HandleErrors()
+        result = NoBuild.NoBuild()
+        start = Start()
+        header = start.header()
+        footer = start.footer()
+
+        yield header
+        yield str(result)
+        yield footer
+
+
+
 class AllPortsInQueue(object):
 
     @cherrypy.expose
     def index(self):
+
         psb = psbdatabase.Select()
         start = Start()
         header = start.header()
@@ -21,30 +47,43 @@ class AllPortsInQueue(object):
         result = psb.AllPortsInQueue()
 
         yield header
-        yield '''
-            <center><table width=800>
-            <thead>
-            <tr>
-                <th class="caption"> Jail </th>
-                <th class="caption"> Port Directory </th>
-                <th class="caption"> Position </th>
-            </tr>
-            </thead>
-            <tbody>
-        '''
 
-        count = 0
+        offset = 0
 
-        for portId, port, jailid in result:
-            count = count + 1
-            yield '<tr>'
-            yield '<td><center>' + str(psb.JailName(jailid)[0]) + '</center></td>'
-            yield '<td><center>' + port + '</center></td>'
-            yield '<td><center>' + str(count) + '</center></td>'
-            yield '</tr>'
+        try:
+            if result[0]:
+                offset = 1
+        except:
+            offset = 0
 
-        yield '</table>'
+        if offset == 0:
+            yield '<center><b>There is nothing...</b></center>'
+            yield '<br></br>'
+        else:
+            yield '''
+                <center><table width=800>
+                <thead>
+                <tr>
+                    <th class="caption"> Jail </th>
+                    <th class="caption"> Port Directory </th>
+                    <th class="caption"> Position </th>
+                </tr>
+                </thead>
+                <tbody>
+            '''
+            count = 0
+            for portId, port, jailid in result:
+                count = count + 1
+                yield '<tr>'
+                yield '<td><center>' + str(psb.JailName(jailid)[0]) + '</center></td>'
+                yield '<td><center>' + port + '</center></td>'
+                yield '<td><center>' + str(count) + '</center></td>'
+                yield '</tr>'
+            yield '</table>'
+
+        yield '<center>'
         yield footer
+        yield '</center>'
 
 
 class PageError(object):
@@ -52,6 +91,7 @@ class PageError(object):
 
     @cherrypy.expose
     def index(self, Id):
+
         PortErrors = porterror.HandleErrors()
         Result = PortErrors.MainPortErrors(Id)
         start = Start()
@@ -66,6 +106,7 @@ class Start(object):
 
     allportsinqueue = AllPortsInQueue()
     pageerror = PageError()
+    nobuild = NoBuild()
 
     @cherrypy.expose
     def index(self):

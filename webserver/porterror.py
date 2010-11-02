@@ -38,3 +38,15 @@ class HandleErrors():
         Result = cursor.fetchall()
 
         return Result
+
+
+    def NoBuild(self):
+
+        cmd = 'SELECT * FROM NoBuild ORDER BY Id DESC'
+        cursor.execute(cmd)
+        Result = cursor.fetchall()
+
+        Dict = {"NoBuild":Result}
+        Html = Template(file="nobuild.tmpl", searchList=[Dict])
+
+        return str(Html)

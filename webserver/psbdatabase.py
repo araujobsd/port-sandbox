@@ -71,13 +71,10 @@ class Select():
         cmd = 'SELECT Id, Port, JailId FROM Queue WHERE StatusBuild=0'
         cursor.execute(cmd)
         Result = cursor.fetchall()
-        NoQueue = ['There is no PORT in the queue...']
 
         try:
             if Result[0]:
                 return Result
         except:
-            return NoQueue
-
-
+            return 0
 
