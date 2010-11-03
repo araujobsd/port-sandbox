@@ -145,14 +145,19 @@ class Start(object):
     nobuild = NoBuild()
 
     @cherrypy.expose
-    def index(self):
+    def index(self, JailId):
 
         yield '<title> Test </title>'
         header = self.header()
         footer = self.footer()
         yield header
         psb = psbdatabase.Select()
-        QueueResult = psb.Queue()
+
+        if JailId == None:
+            QueueResult = psb.Queue(None)
+        else:
+            QueueResult = psb.Queue(JailId)
+
         NextBuild = psb.NextInQueue()
         NextBuild = str(NextBuild[0])
 
@@ -163,10 +168,10 @@ class Start(object):
         yield '''<a> <b>%s</b></a>''' % (NextBuild)
         yield '''
             <right><td align="right"><b>Legend:    </b>
-                [ <a>Build OK: <img src="images/green.png" alt="OK" width="15"/></a> ]
-                [ <a>Build Error: <img src="images/red.png" alt="ERROR" width="15"/></a> ]
-                [ <a>Dependency Error: <img src="images/yellow.png" alt="Dep Error" width="15"/></a> ]
-                [ <a>Plist Error: <img src="images/orange.png" alt="Plist Error" width="15"/></a> ]
+                [ <a>Build OK: <img src="../images/green.png" alt="OK" width="15"/></a> ]
+                [ <a>Build Error: <img src="../images/red.png" alt="ERROR" width="15"/></a> ]
+                [ <a>Dependency Error: <img src="../images/yellow.png" alt="Dep Error" width="15"/></a> ]
+                [ <a>Plist Error: <img src="../images/orange.png" alt="Plist Error" width="15"/></a> ]
                 </right>
 
             '''
@@ -211,11 +216,11 @@ class Start(object):
                     # Set the yellow daemon then.
                     DependsError = porterror.HandleErrors()
                     LibError = DependsError.DependsErrors(Id[0], 'LibDepends')
-                    BuilError = DependsError.DependsErrors(Id[0], 'BuildDepends')
+                    BuildError = DependsError.DependsErrors(Id[0], 'BuildDepends')
                     RunError = DependsError.DependsErrors(Id[0], 'RunDepends')
 
                     LibSize = len(LibError)
-                    BuildSize = len(BuilError)
+                    BuildSize = len(BuildError)
                     RunSize = len(RunError)
 
                     ControlDepLibError = []
@@ -238,9 +243,9 @@ class Start(object):
                                         ControlDepLibError.append(ControlDepError)
 
                     if BuildSize != 0:
-                        for buildError in BuilError:
+                        for buildError in BuildError:
                             if buildError[3] != 0 and buildError != None  or buildError[4] != 0 and buildError != None or \
-                                    buildError[5] != 0 and buildErrors != None or buildError[6] != 0 and buildErrors != None:
+                                    buildError[5] != 0 and buildError != None or buildError[6] != 0 and buildError != None:
                                         ControlDepError = 1
                                         ControlDepBuildError.append(ControlDepError)
                             elif buildError[3] == None or buildError[4] == None or \
@@ -308,28 +313,28 @@ class Start(object):
 
                     if mainPort[11] == 0:
                         PlistError = 0
-                    elif mainPort[11] == 512:
+                    elif mainPort[11] == 256 or mainPort[11] == 512:
                         PlistError = 1
                     elif mainPort[11] == None:
                         PlistError = 2
 
+
                     if MainPortError == 1 and ControlDepError == 2 and PlistError == 2 or \
                             MainPortError == 1 and ControlDepError == 0 and PlistError == 2 or \
                             MainPortError == 1 and ControlDepError == 3 and PlistError ==2:
-                        Status = '<img src="images/red.png" alt="ERROR" width="15"/>'
+                        Status = '<img src="../images/red.png" alt="ERROR" width="15"/>'
                     if MainPortError == 0 and ControlDepError == 0 and PlistError == 0 or \
                         MainPortError == 0 and ControlDepError == 2  and PlistError == 0 or MainPortError == 0 and ControlDepError == 3 and PlistError == 0:
-                        Status = '<img src="images/green.png" alt="OK" width="15"/>'
-                    if MainPortError == 1 and ControlDepError == 1 and PlistError == 2:
-                        Status = '<img src="images/yellow.png" alt="DEPS ERROR" width="15"/>'
-                    if ControlDepError != 3:
-                        if MainPortError == 0 and ControlDepError == 1 and PlistError == 1:
-                            Status = '<img src="images/orange.png" alt="PLIST ERROR" width="15"/>'
+                        Status = '<img src="../images/green.png" alt="OK" width="15"/>'
+                    if MainPortError == 1 and ControlDepError == 1 and PlistError == 2 or MainPortError == 1 and ControlDepError == 3 and PlistError == 1:
+                        Status = '<img src="../images/yellow.png" alt="DEPS ERROR" width="15"/>'
+                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 1 or MainPortError == 0 and ControlDepError == 3 and PlistError == 1:
+                            Status = '<img src="../images/orange.png" alt="PLIST ERROR" width="15"/>'
 
                     yield '''
                         <tr>
                             <td><center>%s</center></td>
-                            <td><center>%s</center></td>
+                            <td><center><a href="/start/?JailId=%s">%s</a></center></td>
                             <td><center><a href="%s">%s</a></center></td>
                             <td><center>%s</center></td>
                             <td><center>%s</center></td>
@@ -339,7 +344,7 @@ class Start(object):
                             <td><center>%s</center></td>
                             <td><center><A href="/pageerror/?Id=%s" title="Teste">log</A></center></td>
                         </tr>
-                    ''' % (Committer, JailId[0], Id[2], Port, PortVersion[:-1], \
+                    ''' % (Committer, JailId[0], JailId[0], Id[2], Port, PortVersion[:-1], \
                             LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
 
 
@@ -360,8 +365,20 @@ class Start(object):
         footer = Template(file="footer.tmpl")
         return str(footer)
 
+class Index(object):
+
+
+    allportsinqueue = AllPortsInQueue()
+    pageerror = PageError()
+    nobuild = NoBuild()
+    start = Start()
+
+    @cherrypy.expose
+    def index(self):
+
+        raise cherrypy.InternalRedirect('/start/?JailId=None')
 
 
 cherrypy.config.update('prod.conf')
-cherrypy.quickstart(Start(),config="app.conf")
+cherrypy.quickstart(Index(),config="app.conf")
 cherrypy.engine.start()
