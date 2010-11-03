@@ -19,7 +19,7 @@
     #if $MainPort[3] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[4] == None
@@ -27,7 +27,7 @@
     #else if $MainPort[4] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[5] == None
@@ -35,7 +35,7 @@
     #else if $MainPort[5] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[6] == None
@@ -43,7 +43,7 @@
     #else if $MainPort[6] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[7] == None
@@ -51,7 +51,7 @@
     #else if $MainPort[7] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[8] == None
@@ -59,7 +59,7 @@
     #else if $MainPort[8] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[9] == None
@@ -67,7 +67,7 @@
     #else if $MainPort[9] == 0
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
     #if $MainPort[11] == None
@@ -75,7 +75,7 @@
     #else if $MainPort[11] != 512
         <td><center>OK<center></td>
     #else
-        <td><center>Error<center></td>
+        <td><center><font color='red'>Error</font><center></td>
     #end if
 
 </tr>
@@ -105,7 +105,7 @@
         #else if $libDepends[3] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $libDepends[4] == None
@@ -113,7 +113,7 @@
         #else if $libDepends[4] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $libDepends[5] == None
@@ -121,7 +121,7 @@
         #else if $libDepends[4] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $libDepends[6] == None
@@ -129,7 +129,7 @@
         #else if $libDepends[6] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
     #end for
@@ -162,7 +162,7 @@
         #else if $buildDepends[3] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $buildDepends[4] == None
@@ -170,7 +170,7 @@
         #else if $buildDepends[4] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $buildDepends[5] == None
@@ -178,7 +178,7 @@
         #else if $buildDepends[5] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $buildDepends[6] == None
@@ -186,7 +186,7 @@
         #else if $buildDepends[6] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
     #end for
     </center>
@@ -218,7 +218,7 @@
         #else if $runDepends[3] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $runDepends[4] == None
@@ -226,7 +226,7 @@
         #else if $runDepends[4] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $runDepends[5] == None
@@ -234,7 +234,7 @@
         #else if $runDepends[5] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
 
         #if $runDepends[6] == None
@@ -242,7 +242,7 @@
         #else if $runDepends[6] == 0
             <td><center>OK</center></td>
         #else
-            <td><center>Error</center></td>
+            <td><center><font color='red'>Error</font><center></td>
         #end if
     #end for
     </center>

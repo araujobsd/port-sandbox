@@ -101,6 +101,10 @@ class Jail:
                 csup = '/usr/bin/csup'
                 Prefix = JailDir + '/build'
                 ConfFile = JailDir + '/csup.conf'
+
+                if not os.path.exists(Prefix):
+                    os.makedirs(Prefix)
+
                 os.system('%s -L2 -g %s' % (csup, ConfFile))
                 os.system('cd %s/src/; make buildworld DESTDIR=%s' % (JailDir, Prefix))
                 os.system('cd %s/src/; make installworld DESTDIR=%s' % (JailDir, Prefix))

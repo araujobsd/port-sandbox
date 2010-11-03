@@ -214,38 +214,58 @@ class Start(object):
                     BuilError = DependsError.DependsErrors(Id[0], 'BuildDepends')
                     RunError = DependsError.DependsErrors(Id[0], 'RunDepends')
 
-                    for libError in LibError:
-                        if libError[3] == 1 or libError[4] == 1 or \
-                                libError[5] == 1 or libError[6] == 1:
-                                    ControlDepError = 1
-                        elif libError[3] == None or libError[4] == None or \
-                                libError[5] == None or libError[6] == None:
-                                    ControlDepError = 2
-                        elif libError[3] == 0 and libError[4] == 0 and \
-                                libError[5] == 0 and libError[6] == 0:
-                                    ControlDepError = 0
+                    LibSize = len(LibError)
+                    BuildSize = len(BuilError)
+                    RunSize = len(RunError)
 
-                    for buildError in BuilError:
-                        if buildError[3] == 1 or buildError[4] == 1 or \
-                                buildError[5] == 1 or buildError[6] == 1:
-                                    ControlDepError = 1
-                        elif buildError[3] == None or buildError[4] == None or \
-                                buildError[5] == None or buildError[6] == None:
-                                    ControlDepError = 2
-                        elif buildError[3] == 0 and buildError[4] == 0 and \
-                                buildError[5] == 0 and buildError[6] == 0:
-                                    ControlDepError = 0
+                    ControlDepLibError = []
+                    ControlDepBuildError = []
+                    ControlDepRunError = []
 
-                    for runError in RunError:
-                        if runError[3] == 1 or runError[4] == 1 or \
-                                runError[5] == 1 or runError[6] == 1 \
-                                : ControlDepError = 1
-                        elif runError[3] == None or runError[4] == None or \
-                                runError[5] == None or runError[6] == None:
-                                    ControlDepError = 2
-                        elif runError[3] == 0 and runError[4] == 0 and \
-                                runError[5] == 0 and runError[6] == 0:
-                                    ControlDepError = 0
+                    if LibSize != 0:
+                        for libError in LibError:
+                            if libError[3] != 0 and libError[3] != None or libError[4] != 0 and libError[4] != None or \
+                                    libError[5] != 0 and libError[5] != None or libError[6] != 0 and libError[6] != None:
+                                        ControlDepError = 1
+                                        ControlDepLibError.append(ControlDepError)
+                            elif libError[3] == None or libError[4] == None or \
+                                    libError[5] == None or libError[6] == None:
+                                        ControlDepError = 2
+                                        ControlDepLibError.append(ControlDepError)
+                            elif libError[3] == 0 and libError[4] == 0 and \
+                                    libError[5] == 0 and libError[6] == 0:
+                                        ControlDepError = 0
+                                        ControlDepLibError.append(ControlDepError)
+
+                    if BuildSize != 0:
+                        for buildError in BuilError:
+                            if buildError[3] != 0 and buildError != None  or buildError[4] != 0 and buildError != None or \
+                                    buildError[5] != 0 and buildErrors != None or buildError[6] != 0 and buildErrors != None:
+                                        ControlDepError = 1
+                                        ControlDepBuildError.append(ControlDepError)
+                            elif buildError[3] == None or buildError[4] == None or \
+                                    buildError[5] == None or buildError[6] == None:
+                                        ControlDepError = 2
+                                        ControlDepBuildError.append(ControlDepError)
+                            elif buildError[3] == 0 and buildError[4] == 0 and \
+                                    buildError[5] == 0 and buildError[6] == 0:
+                                        ControlDepError = 0
+                                        ControlDepBuildError.append(ControlDepError)
+
+                    if RunSize != 0:
+                        for runError in RunError:
+                            if runError[3] != 0 and runError != None or runError[4] != 0 and runError[4] != None or \
+                                    runError[5] != 0 and runError[5] != None or runError[6] != 0 and runError[6] != None:
+                                        ControlDepError = 1
+                                        ControlDepRunError.append(ControlDepError)
+                            elif runError[3] == None or runError[4] == None or \
+                                    runError[5] == None or runError[6] == None:
+                                        ControlDepError = 2
+                                        ControlDepRunError.append(ControlDepError)
+                            elif runError[3] == 0 and runError[4] == 0 and \
+                                    runError[5] == 0 and runError[6] == 0:
+                                        ControlDepError = 0
+                                        ControlDepRunError.append(ControlDepError)
 
                     # Check if the MainPort are OK to show the green daemon.
                     MainPort = psbdatabase.Select()
@@ -254,11 +274,27 @@ class Start(object):
                     MainPortNotFinished = 0
                     Status = 0
 
+                    # Check if there is any dependencie with problem and
+                    # set ControlDepError equal 1
+                    for error in ControlDepLibError:
+                        if error == 1:
+                            ControlDepError = 1
+
+                    for error in ControlDepRunError:
+                        if error == 1:
+                            ControlDepError = 1
+
+                    for error in ControlDepBuildError:
+                        if error == 1:
+                            ControlDepError =1
+
+
                     # If there is no dependencies
                     try:
                         ControlDepError
                     except:
                         ControlDepError = 3
+
 
                     if mainPort[3] != 0 or mainPort[4] != 0 or mainPort[5] != 0 or \
                             mainPort[6] != 0 or mainPort[7] != 0 or \
@@ -278,15 +314,17 @@ class Start(object):
                         PlistError = 2
 
                     if MainPortError == 1 and ControlDepError == 2 and PlistError == 2 or \
-                            MainPortError == 1 and ControlDepError == 0 and PlistError == 2:
+                            MainPortError == 1 and ControlDepError == 0 and PlistError == 2 or \
+                            MainPortError == 1 and ControlDepError == 3 and PlistError ==2:
                         Status = '<img src="images/red.png" alt="ERROR" width="15"/>'
                     if MainPortError == 0 and ControlDepError == 0 and PlistError == 0 or \
                         MainPortError == 0 and ControlDepError == 2  and PlistError == 0 or MainPortError == 0 and ControlDepError == 3 and PlistError == 0:
                         Status = '<img src="images/green.png" alt="OK" width="15"/>'
                     if MainPortError == 1 and ControlDepError == 1 and PlistError == 2:
                         Status = '<img src="images/yellow.png" alt="DEPS ERROR" width="15"/>'
-                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 1 or MainPortError == 0 and ControlDepError == 3 and PlistError == 1:
-                        Status = '<img src="images/orange.png" alt="PLIST ERROR" width="15"/>'
+                    if ControlDepError != 3:
+                        if MainPortError == 0 and ControlDepError == 1 and PlistError == 1:
+                            Status = '<img src="images/orange.png" alt="PLIST ERROR" width="15"/>'
 
                     yield '''
                         <tr>
