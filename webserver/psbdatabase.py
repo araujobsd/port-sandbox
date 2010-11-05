@@ -55,6 +55,12 @@ class Select():
 
         return Result
 
+    def DelPort(self, IdPort):
+
+        cmd = 'DELETE FROM Queue WHERE Id=%s' % (IdPort)
+        cursor.execute(cmd)
+        database.commit()
+
 
     def DependsQuant(self, Table, Id):
 

@@ -43,12 +43,16 @@ class AllPortsInQueue(object):
 
         PortDir = '/usr/ports/' + str(port)
         if os.path.isdir(PortDir):
-            print port
-            print jail
             os.system("cd ../scripts/ ; ./init.py add %s %s" % (port, jail))
 
         raise cherrypy.InternalRedirect('/allportsinqueue/')
 
+    @cherrypy.expose
+    def DelPort(self, IdPort):
+
+        psb = psbdatabase.Select()
+        psb.DelPort(IdPort)
+        raise cherrypy.InternalRedirect('/allportsinqueue/')
 
     @cherrypy.expose
     def index(self):
@@ -103,6 +107,7 @@ class AllPortsInQueue(object):
                     <th class="caption"> Jail </th>
                     <th class="caption"> Port Directory </th>
                     <th class="caption"> Position </th>
+                    <th class="caption"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -114,6 +119,9 @@ class AllPortsInQueue(object):
                 yield '<td><center>' + str(psb.JailName(jailid)[0]) + '</center></td>'
                 yield '<td><center>' + port + '</center></td>'
                 yield '<td><center>' + str(count) + '</center></td>'
+                yield '''<td><center><form action="DelPort" method="post">
+                <input type="hidden" name="IdPort" value="%s">
+                <input type="submit" value="Del"></form></center></td>''' % (portId)
                 yield '</tr>'
             yield '</table>'
 
@@ -303,13 +311,13 @@ class Start(object):
 
                     if mainPort[3] != 0 or mainPort[4] != 0 or mainPort[5] != 0 or \
                             mainPort[6] != 0 or mainPort[7] != 0 or \
-                            mainPort[8] != 0 or mainPort[9] != 0: MainPortError = 1
+                            mainPort[8] != 0 or mainPort[9] != 0:
+                                MainPortError = 1
                     elif mainPort[3] == None or mainPort[4] == None or \
                             mainPort[5] == None or mainPort[6] == None or \
                             mainPort[7] == None or mainPort[8] == None or \
                             mainPort[8] == None or mainPort[9] == None:
                                 MainPortError = 2
-
 
                     if mainPort[11] == 0:
                         PlistError = 0
