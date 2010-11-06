@@ -8,6 +8,7 @@
 [ <a>NOK: <img src="../images/red.png" alt="Error" width="15"/></a> ]
 [ <a>OK: <img src="../images/green.png" alt="OK" width="15"/></a> ]
 </right></td></center></table><p></p>
+#if len($NoBuild) != 0
 <center><table width=800>
 <thead>
 <tr>
@@ -119,6 +120,10 @@
         #end for
         #end if
     #end for
+#else
+<center>
+<b> There is nothing to show..... </b>
+#end if
 </center>
 </tbody></table>
 <br></br>

@@ -43,6 +43,7 @@ class HandleErrors():
 
     def NoBuild(self):
 
+        offset = None
         cmd = 'SELECT * FROM NoBuild ORDER BY Id DESC'
         cursor.execute(cmd)
         Result = cursor.fetchall()

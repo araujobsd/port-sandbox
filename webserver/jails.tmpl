@@ -1,0 +1,54 @@
+<div id="overDiv" style="position:absolute; visibility:hide; z-index:1;">
+</div>
+<script  language="javascript" src="../java/overlib.js"> 
+</script>
+#if len($Jails) != 0
+<center><table width=800>
+<thead>
+<tr>
+    <th class="caption"> Name </th>
+    <th class="caption"> Releng </th>
+    <th class="caption"> Path </th>
+    <th class="caption"> Ports OK </th>
+    <th class="caption"> Ports Fail </th>
+</tr>
+</thead>
+<tbody>
+#set $Ok_Count = 0
+#set $Fail_Count = 0
+    #for $line in $Jails
+        #if $Ok_Count == 0
+            #for $Ok in $PortsOk
+                #if $Ok[6] == $line[0]
+                    #set $Ok_Count = $Ok_Count + 1
+                #end if
+            #end for
+        #end if
+        #if $Fail_Count == 0
+            #for $Fail in $PortsFail
+                #if $Fail[6] == $line[0]
+                    #set $Fail_Count = $Fail_Count + 1
+                #end if
+            #end for
+        #end if
+        <tr>
+            <td><center>$line[1]</center></td>
+            #if $line[2] == "."
+                <td><center>CURRENT</center></td>
+            #else
+                <td><center>$line[2]</center></td>
+            #end if
+            <td><center>$line[3]</center></td>
+            <td><center><a href="/jailsbuildstatus/?JailId=$line[0]&ByResult=0">[ $Ok_Count ]</a></center></td>
+            <td><center><a href="/jailsbuildstatus/?JailId=$line[0]&ByResult=1">[ $Fail_Count ]</a></center></td>
+            #set $Ok_Count = 0
+            #set $Fail_Count = 0
+        </tr>
+    #end for
+#else
+<center>
+<b> There is nothing to show..... </b>
+#end if
+</center>
+</tbody></table>
+<br></br>

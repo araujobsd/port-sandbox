@@ -1,0 +1,40 @@
+<div id="overDiv" style="position:absolute; visibility:hide; z-index:1;">
+</div>
+<script  language="javascript" src="../java/overlib.js"> 
+</script>
+#if len($JailResult) != 0
+<center><table width=800>
+<thead>
+<tr>
+    <th class="caption"> Jail </th>
+    <th class="caption"> Port </th>
+    <th class="caption"> Date </th>
+    <th class="caption"> Status </th>
+    <th class="caption"> Details </th>
+</tr>
+</thead>
+#for $line in $JailResult
+    <tr>
+    #for $name in $JailName
+        #if $line[6] == $name[0]
+            <td><center>$name[1]</center></td>
+        #end if
+    #end for
+        <td><center>$line[1]</center></td>
+        <td><center>$line[2]</center></td>
+    #if $line[4] == 1
+        <td><center><font color="red"><b>Fail</b></font></center></td>
+    #elif $line[4] == 0
+        <td><center><font color="green"><b>Ok</b></font></center></td>
+    #end if
+        <td><center><a href="/pageerror/?Id=$line[0]">log</a></center></td>
+    </tr>
+#end for
+<tbody>
+#else
+<center>
+<b> There is nothing to show..... </b>
+#end if
+</center>
+</tbody></table>
+<br></br>

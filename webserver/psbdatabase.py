@@ -46,6 +46,14 @@ class Select():
 
         return Result
 
+    def JailInfo(self):
+
+        cmd = 'SELECT Id, JailName, Releng, JailDir FROM Jail'
+        cursor.execute(cmd)
+        Result = cursor.fetchall()
+
+        return Result
+
 
     def MainPort(self, Id):
 
@@ -99,4 +107,29 @@ class Select():
                 return Result
         except:
             return 0
+
+    def AllPortsStatus(self, ByResult):
+
+        if ByResult == None:
+            cmd = 'SELECT * FROM Queue ORDER BY Id DESC'
+            cursor.execute(cmd)
+        else:
+            cmd = 'SELECT * FROM Queue WHERE Status = "%s" ORDER BY Id DESC' % (ByResult)
+            cursor.execute(cmd)
+
+        Result = cursor.fetchall()
+
+        try:
+            if Result[0]:
+                return Result
+        except:
+             return 0
+
+    def ShowStatusByJail(self, JailId, ByResult):
+
+        cmd = 'SELECT * FROM Queue WHERE JailId = "%s" AND Status = "%s" ORDER BY Id DESC' % (JailId, ByResult)
+        cursor.execute(cmd)
+        Result = cursor.fetchall()
+
+        return Result
 

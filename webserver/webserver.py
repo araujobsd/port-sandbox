@@ -10,13 +10,53 @@ database.select_db('portsandbox')
 cursor = database.cursor()
 _curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 
-class Fails(object):
+class JailsBuildStatus(object):
+
+    @cherrypy.expose
+    def index(self, JailId, ByResult):
+
+        psb = psbdatabase.Select()
+        jailresult = psb.ShowStatusByJail(JailId, ByResult)
+        jailname = psb.JailName(None)
+        start = Start()
+        header = start.header()
+        footer = start.footer()
+
+        Dict = {"JailResult":jailresult, "JailName":jailname}
+        html = Template(file="jailresult.tmpl", searchList=[Dict])
+
+        yield header
+        yield str(html)
+        yield '<center>'
+        yield footer
+        yield '</center>'
+
+
+class Jails(object):
 
     @cherrypy.expose
     def index(self):
 
         psb = psbdatabase.Select()
+        jailinfo = psb.JailInfo()
+        portsfail= psb.AllPortsStatus(1)
+        portsok= psb.AllPortsStatus(0)
+        start = Start()
+        header = start.header()
+        footer = start.footer()
 
+        yield header
+
+        # Code here
+        Dict = {"Jails":jailinfo, "PortsFail":portsfail, "PortsOk":portsok}
+        html = Template(file="jails.tmpl", searchList=[Dict])
+
+        yield str(html)
+
+
+        yield '<center>'
+        yield footer
+        yield '</center>'
 
 class NoBuild(object):
 
@@ -45,6 +85,12 @@ class AllPortsInQueue(object):
         if os.path.isdir(PortDir):
             os.system("cd ../scripts/ ; ./init.py add %s %s" % (port, jail))
 
+        raise cherrypy.InternalRedirect('/allportsinqueue/')
+
+    @cherrypy.expose
+    def RunPort(self):
+
+        os.system("cd ../scripts/ ; ./portsandbox.py &")
         raise cherrypy.InternalRedirect('/allportsinqueue/')
 
     @cherrypy.expose
@@ -124,6 +170,18 @@ class AllPortsInQueue(object):
                 <input type="submit" value="Del"></form></center></td>''' % (portId)
                 yield '</tr>'
             yield '</table>'
+
+            yield '''
+            <center><table width=800>
+            <thread>
+            <tr>
+                <th class="caption"> When you're prepared to run the Port-Sandbox, click here.</th>
+                <th class="caption">
+            <right><form action="RunPort" method="post">
+            <input type="submit" value="Run Port-Sandbox"></form></right>
+            </th>
+            </thread></table></center>
+            '''
 
         yield '<center>'
         yield footer
@@ -380,6 +438,8 @@ class Index(object):
     pageerror = PageError()
     nobuild = NoBuild()
     start = Start()
+    jails = Jails()
+    jailsbuildstatus = JailsBuildStatus()
 
     @cherrypy.expose
     def index(self):
