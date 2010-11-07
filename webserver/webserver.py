@@ -416,7 +416,7 @@ class Start(object):
                             <td><center>%s</center></td>
                             <td><center>%s</center></td>
                             <td><center>%s</center></td>
-                            <td><center><A href="/pageerror/?Id=%s" title="Teste">log</A></center></td>
+                            <td><center><A href="/pageerror/?Id=%s" title="Teste">more</A></center></td>
                         </tr>
                     ''' % (Committer, JailId[0], JailId[0], Id[2], Port, PortVersion[:-1], \
                             LibDependsQuant, BuildDependsQuant, RunDependsQuant, Date,  Status, Id[0])
