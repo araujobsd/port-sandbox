@@ -2,15 +2,15 @@
 </div>
 <script  language="javascript" src="../java/overlib.js"> 
 </script>
-#if len($Jails) != 0
+#if len($Jails) != 0 and len($PortsOk) != 0 and len($PortsFail) != 0
 <center><table width=800>
 <thead>
 <tr>
     <th class="caption"> Name </th>
     <th class="caption"> Releng </th>
     <th class="caption"> Path </th>
-    <th class="caption"> Ports OK </th>
-    <th class="caption"> Ports Fail </th>
+    <th class="caption"> Build OK </th>
+    <th class="caption"> Build Fail </th>
 </tr>
 </thead>
 <tbody>

@@ -90,7 +90,12 @@ class AllPortsInQueue(object):
     @cherrypy.expose
     def RunPort(self):
 
-        os.system("cd ../scripts/ ; ./portsandbox.py &")
+        Pid = os.path.isfile("/tmp/portsandbox.lock")
+        if Pid == True:
+            print "It's running..."
+        else:
+            os.system("cd ../scripts/ ; ./portsandbox.py &")
+
         raise cherrypy.InternalRedirect('/allportsinqueue/')
 
     @cherrypy.expose
@@ -387,14 +392,17 @@ class Start(object):
 
                     if MainPortError == 1 and ControlDepError == 2 and PlistError == 2 or \
                             MainPortError == 1 and ControlDepError == 0 and PlistError == 2 or \
-                            MainPortError == 1 and ControlDepError == 3 and PlistError ==2:
+                            MainPortError == 1 and ControlDepError == 3 and PlistError == 2:
                         Status = '<img src="../images/red.png" alt="ERROR" width="15"/>'
+
                     if MainPortError == 0 and ControlDepError == 0 and PlistError == 0 or \
                         MainPortError == 0 and ControlDepError == 2  and PlistError == 0 or MainPortError == 0 and ControlDepError == 3 and PlistError == 0:
                         Status = '<img src="../images/green.png" alt="OK" width="15"/>'
+
                     if MainPortError == 1 and ControlDepError == 1 and PlistError == 2 or MainPortError == 1 and ControlDepError == 3 and PlistError == 1:
                         Status = '<img src="../images/yellow.png" alt="DEPS ERROR" width="15"/>'
-                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 1 or MainPortError == 0 and ControlDepError == 3 and PlistError == 1:
+
+                    if MainPortError == 0 and ControlDepError == 0 and PlistError == 1 or MainPortError == 0 and ControlDepError == 3 and PlistError == 1 or MainPortError == 1 and ControlDepError == 0 and PlistError == 1 or MainPortError == 1 and ControlDepError == 3 and PlistError == 1:
                             Status = '<img src="../images/orange.png" alt="PLIST ERROR" width="15"/>'
 
                     yield '''

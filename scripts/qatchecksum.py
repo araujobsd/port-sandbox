@@ -193,8 +193,48 @@ def MtreeCheck(Phase, JailId):
         !%s/media
         !%s/rescue
         !%s/sys
+        !%s/usr/lib/libcrypt.so
+        !%s/usr/lib/libkvm.so
+        !%s/usr/lib/libmd.so
+        !%s/usr/lib/libncurses.so
+        !%s/usr/lib/libcurses.so
+        !%s/usr/lib/libtermcap.so
+        !%s/usr/lib/libtermlib.so
+        !%s/usr/lib/libtinfo.so
+        !%s/usr/lib/libncursesw.so
+        !%s/usr/lib/libcursesw.so
+        !%s/usr/lib/libtermcapw.so
+        !%s/usr/lib/libtermlibw.so
+        !%s/usr/lib/libtinfow.so
+        !%s/usr/lib/libsbuf.so
+        !%s/usr/lib/libutil.so
+        !%s/usr/lib/libalias.so
+        !%s/usr/lib/libbegemot.so
+        !%s/usr/lib/libbsnmp.so
+        !%s/usr/lib/libcam.so
+        !%s/usr/lib/libdevstat.so
+        !%s/usr/lib/libedit.so
+        !%s/usr/lib/libbsdxml.so
+        !%s/usr/lib/libgeom.so
+        !%s/usr/lib/libipsec.so
+        !%s/usr/lib/libkiconv.so
+        !%s/usr/lib/libipx.so
+        !%s/usr/lib/libpcap.so
+        !%s/usr/lib/libufs.so
+        !%s/usr/lib/libz.so
+        !%s/usr/lib/libavl.so
+        !%s/usr/lib/libctf.so
+        !%s/usr/lib/libdtrace.so
+        !%s/usr/lib/libnvpair.so
+        !%s/usr/lib/libumem.so
+        !%s/usr/lib/libuutil.so
+        !%s/usr/lib/libzfs.so
+        !%s/usr/lib/libzpool.so
+        !%s/usr/lib/libreadline.so
+        !%s/usr/lib/libcrypto.so
         %s spug
-    """ % (jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath))
+    """ % (jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath,
+            jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath, jailpath))
     StdiffConf.close()
 
 

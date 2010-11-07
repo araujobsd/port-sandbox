@@ -48,11 +48,15 @@ class HandleErrors():
         cursor.execute(cmd)
         Result = cursor.fetchall()
 
-        cmd = 'SELECT Id, StartBuild FROM Queue'
+        cmd = 'SELECT Id, StartBuild, JailId FROM Queue'
         cursor.execute(cmd)
         Date = cursor.fetchall()
 
-        Dict = {"NoBuild":Result, "Date":Date}
+        cmd = 'SELECT * FROM Jail'
+        cursor.execute(cmd)
+        Jail = cursor.fetchall()
+
+        Dict = {"NoBuild":Result, "Date":Date, "Jail":Jail}
         Html = Template(file="nobuild.tmpl", searchList=[Dict])
 
         return str(Html)

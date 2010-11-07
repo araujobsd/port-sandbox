@@ -23,9 +23,9 @@
         <td><center>$line[1]</center></td>
         <td><center>$line[2]</center></td>
     #if $line[4] == 1
-        <td><center><font color="red"><b>Fail</b></font></center></td>
+        <td><center><font color="red"><b>Build Fail</b></font></center></td>
     #elif $line[4] == 0
-        <td><center><font color="green"><b>Ok</b></font></center></td>
+        <td><center><font color="green"><b>Build Ok</b></font></center></td>
     #end if
         <td><center><a href="/pageerror/?Id=$line[0]">log</a></center></td>
     </tr>

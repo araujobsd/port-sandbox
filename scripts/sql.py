@@ -30,13 +30,21 @@ def GetCommitter(Last):
             Committer_Line = line
 
     Committer_Line = Committer_Line.split(' ')
+    Who_Commit = None
+
+    try:
+        Committer_Line[6]
+        Who_Commit = Committer_Line[6]
+    except:
+        Who_Commit = "New Port"
+
     cmd = 'UPDATE MainPort SET Committer="%s" WHERE id="%s"' \
-           % (Committer_Line[6], Last)
+           % (Who_Commit, Last)
     cursor.execute(cmd)
     database.commit()
     Makefile.close()
 
-    return Committer_Line[6]
+    return Who_Commit
 
 
 def LogDepends(Last, PortName, Table):

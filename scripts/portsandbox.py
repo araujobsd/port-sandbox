@@ -10,6 +10,7 @@ import datetime
 import checkall
 import cleangarbage
 import configparser
+import os
 
 conf = configparser.MySQL()
 host, user, password, db = conf.config()
@@ -36,6 +37,7 @@ class Job(object):
         cursor.execute(cmd)
         database.commit()
         cleangarbage.CleanPreLog()
+        os.system("rm -f /tmp/portsandbox.lock")
 
         return
 
@@ -49,6 +51,7 @@ if __name__ == '__main__':
     cmd = 'SELECT Id, Port, JailId FROM Queue WHERE StatusBuild=0'
     cursor.execute(cmd)
     Result = cursor.fetchall()
+    os.system("touch /tmp/portsandbox.lock")
 
     for result in Result:
         if result[0] and result[1]:

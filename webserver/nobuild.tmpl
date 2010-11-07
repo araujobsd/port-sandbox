@@ -13,7 +13,8 @@
 <thead>
 <tr>
     <th class="caption"> Date </th>
-    <th class="caption"> Classification </th>
+    <th class="caption"> Jail </th>
+    <th class="caption"> Class </th>
     <th class="caption"> Port </th>
     <th class="caption"> No Package </th>
     <th class="caption"> No Cdrom </th>
@@ -31,12 +32,18 @@
                 #set $Date_Show = $date[1]
             #end if
         #end for
+        #for $jail in $Jail
+            #if $jail[0] == $date[2]
+                #set $Jail_Name = $jail[3]
+            #end if
+        #end for
         #set $Port = $line[1].split('ports/')
         #if $line[2] == 'Main'
             <tr>
-                <td><center>$Date_Show</a></center></td>
-                <td><center><b>Main Port</a></b></center></td>
-                <td><center><b>$Port[1]</b></center></td>
+                <td><center>$Date_Show</center></td>
+                <td><center>$Jail_Name</center></td>
+                <td><center>Main</center></td>
+                <td><center>$Port[1]</center></td>
                 #if $line[3] == 1
                     <td><center><a href="javascript:void(0);" onmouseover="return dls('$line[9]');" onmouseout="return nd();"><img src="../images/red.png" alt="Error" width="15"/></a></center></td>
                 #else
