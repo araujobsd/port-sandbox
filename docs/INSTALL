@@ -1,0 +1,27 @@
+1) First of all, install all dependencies.
+root# cd /usr/ports/databases/mysql50-server/ ; make install clean
+root# cd /usr/ports/sysutils/py-stdiff ;  make install clean
+root# cd /usr/ports/www/py-cherrypy ; make install clean
+root# cd /usr/ports/devel/py-cheetah ; make install clean
+root# cd /usr/ports/databases/py-MySQLdb ; make install clean
+
+Note: The MySQL server can be another version, isn't necessary to be exactly the 5.0.
+
+2) Create a database called as portsandbox without password.
+root# mysqladmin create portsandbox
+root# mysql portsandbox < sql/portsandbox.sql
+root# mysqlshow portsandbox
+
+3) Create a JAIL environment.
+root# cd scripts/jail/
+root# python jail.py create FreeBSD-8 RELENG_8
+
+4) Run the webserver.
+root# cd webserver ; python webserver.py
+
+5) Access the WebUI.
+http://127.0.0.1:8080/
+
+NOTE: Port-Sandbox is still using the default path of ports and also using the same default path of /var/db, with some ports you may find some problems or errors to build inside port-sandbox. Also the port-sandbox isn't done yet, it is the first BETA and it is still in constantly development.
+
+Another important thing is, everything that you try to build inside port-sandbox will be done only inside port-sandbox, nothing will be executed directly in your production system. Although the port-sandbox build every port inside a jail, we can't be responsible for any damage into your system, or by a wrong install or even a problem on port-sandbox.
