@@ -35,7 +35,6 @@ import sys
 sys.path.append('jail')
 import jail
 
-#jailpath = '/usr/Jail/Qat/'
 
 def PortVersion(path, JailId):
 
