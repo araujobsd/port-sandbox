@@ -31,6 +31,7 @@
 #
 
 import sys
+import os
 import commands
 import MySQLdb
 import qatcheckporterror
@@ -343,6 +344,7 @@ def Init(PortQueue, Id, JailId):
 
         if ControlError == 0:
             File = open(PortReference, 'r')
+            CleanWorkPort = []
             #pcvs.CvsCheckOut(PortReference)
 
             conf = configparser.MySQL()
@@ -361,6 +363,8 @@ def Init(PortQueue, Id, JailId):
 
             for line in File:
                 line = line.split(';')
+                # Add ports in a list to be clean after install.
+                CleanWorkPort.append(line[2])
                 if line[1] == 'Port Name':
                     portname = line[2].split('\n')
                     cursor.execute('INSERT INTO MainPort (Id, PortName) VALUES (%s, %s)', \
@@ -492,6 +496,10 @@ def Init(PortQueue, Id, JailId):
                 cursor.execute(cmd)
                 database.commit()
 
+                # Clean the workdir after install the port.
+                for cleanport in CleanWorkPort:
+                    print "==> Clean: %s" % (cleanport)
+                    os.system('cd %s ; make clean' % (cleanport))
 
                 # Show on console where is the log
                 cmd = 'SELECT PortLog from MainPort where id=%s' % (last[0])
