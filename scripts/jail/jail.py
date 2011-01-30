@@ -68,6 +68,11 @@ class Jail:
             if not os.path.exists(Prefix):
                 os.makedirs(Prefix)
 
+            print "===================< DEBUG >==============="
+            print "Jaildir: %s" % (Jaildir)
+            print "Prefix: %s" % (Prefix)
+            print "===================< DEBUG >==============="
+
             os.system('%s -L2 -g %s' % (csup, ConfFile))
             os.system('cd %s/src/; make buildworld DESTDIR=%s' % (JailDir, Prefix))
             os.system('cd %s/src/; make installworld DESTDIR=%s' % (JailDir, Prefix))
@@ -153,6 +158,19 @@ class Jail:
             print "--------------------------"
 
 
+    def UpdatePortsTree(self):
+
+
+        print "==> Waiting while portstree is updating."
+        update_portstree = commands.getstatusoutput("cvsup -L2 -g ports-supfile")
+
+        if update_portstree[0] == 0:
+            print "==> PortsTree Updated [OK]"
+        else:
+            print "==> Error to update PortsTree: "
+            print update_portstree[1]
+
+
 class JailEngine:
 
 
@@ -179,8 +197,9 @@ class JailEngine:
         os.system('mount -t devfs devfs %s/dev' % (BuildDir))
         os.system('devfs -m %s/dev rule apply path null unhide' % (BuildDir))
         os.system('mkdir %s/usr/ports' % (BuildDir))
+        #os.system('mount_nullfs /usr/Jail/lib/ports %s/usr/ports' % (BuildDir))
         os.system('mount_nullfs /usr/ports %s/usr/ports' % (BuildDir))
-        #os.system('mount_nullfs /var %s/var' % (BuildDir))
+        os.system('mount_nullfs /usr/Jail/lib/var %s/var' % (BuildDir))
         os.system('mkdir %s/usr/src' % (BuildDir))
         os.system('mount_nullfs /usr/src %s/usr/src' % (BuildDir))
         os.system('cp /etc/resolv.conf %s/etc' % (BuildDir))
@@ -225,10 +244,13 @@ if __name__ == '__main__':
     elif sys_len == 2:
         if sys.argv[1] == 'list':
             jail.ListJail()
+        elif sys.argv[1] == 'updatePorts':
+            jail.UpdatePortsTree()
         elif sys.argv[1] == 'help':
             print "Example: ./jail.py create NAME RELENG_X"
             print "Example: ./jail.py update ID"
             print "Example: ./jail.py remove ID"
+            print "Example: ./jail.py updatePorts"
             print "Example: ./jail.py list"
     else:
         print "Usage: ./jail.py help"
